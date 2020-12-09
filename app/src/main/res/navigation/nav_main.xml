@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main2"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.ix.ibrahim7.socketio.ui.fragment.ChatFragment"
+        android:label="Socket IO Chat App" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ix.ibrahim7.socketio.ui.fragment.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_down"
+            app:popEnterAnim="@anim/slide_up"
+            app:popExitAnim="@anim/slide_down" />
+    </fragment>
+</navigation>
