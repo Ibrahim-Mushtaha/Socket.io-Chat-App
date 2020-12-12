@@ -17,6 +17,7 @@ object Constant {
     const val USERID ="userid"
     const val START = "start"
     val TEXT ="Text"
+    val MESSAGE ="message"
 
     fun getSharePref(context: Context) =
         context.getSharedPreferences("Share", Activity.MODE_PRIVATE)
