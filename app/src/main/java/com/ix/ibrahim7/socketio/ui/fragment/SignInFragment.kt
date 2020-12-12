@@ -35,15 +35,6 @@ class SignInFragment : Fragment() {
     private var mSocket: Socket? = null
     lateinit var root:View
 
-    override fun onAttach(context: Context) {
-      /*  if (fire.mAuth.currentUser != null){
-            startActivity(Intent(requireContext(), Main2Activity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            })
-        }*/
-        super.onAttach(context)
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

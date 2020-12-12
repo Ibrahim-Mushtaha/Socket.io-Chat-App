@@ -10,6 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.ix.ibrahim7.socketio.R
+import com.ix.ibrahim7.socketio.model.TextMessage
+import java.util.ArrayList
 
 object Constant {
 
@@ -17,6 +19,7 @@ object Constant {
     const val USERID ="userid"
     const val START = "start"
     val TEXT ="Text"
+    val IMAGE ="image"
     val MESSAGE ="message"
 
     fun getSharePref(context: Context) =
@@ -31,6 +34,18 @@ object Constant {
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
             .into(imageView)
+    }
+
+
+    fun getBitmapImage(activity: Activity,path:ByteArray,imageView: ImageView){
+        Glide.with(activity)
+            .asBitmap()
+            .load(path)
+            .into(imageView)
+    }
+
+    fun decodeImage(date: ArrayList<TextMessage>, position: Int):ByteArray {
+        return android.util.Base64.decode(date[position].message, android.util.Base64.DEFAULT)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

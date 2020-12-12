@@ -2,7 +2,9 @@ package com.ix.ibrahim7.socketio.ui.fragment
 
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,24 +15,33 @@ import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.adapter.Message_Adapter
 import com.ix.ibrahim7.socketio.databinding.FragmentChatBinding
 import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.ui.fragment.dialog.ShowImageFragment
 import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.IMAGE
 import com.ix.ibrahim7.socketio.util.Constant.MESSAGE
+import com.ix.ibrahim7.socketio.util.Constant.TEXT
 import com.ix.ibrahim7.socketio.util.Constant.USER
+import com.vansuita.pickimage.bean.PickResult
+import com.vansuita.pickimage.bundle.PickSetup
+import com.vansuita.pickimage.dialog.PickImageDialog
+import com.vansuita.pickimage.listeners.IPickResult
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_chat.*
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ChatFragment : Fragment(), Message_Adapter.onClick {
+class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
 
 
     private lateinit var mBinding: FragmentChatBinding
 
     private var mSocket: Socket? = null
 
+    var image = ""
 
     private val adapter by lazy {
         Message_Adapter(requireActivity(), ArrayList(), this)
@@ -70,7 +81,11 @@ class ChatFragment : Fragment(), Message_Adapter.onClick {
 
 
         btn_send.setOnClickListener {
-            attemptSend()
+            attemptSend(etxt_massege.text.toString(), TEXT)
+        }
+
+        btn_send_image.setOnClickListener {
+            openChooseImage()
         }
 
 
@@ -80,10 +95,10 @@ class ChatFragment : Fragment(), Message_Adapter.onClick {
     override fun onClickItem(position: Int, type: Int) {
         when (type) {
             1 -> {
-                //  ShowImageFragment(array[position].message).show(childFragmentManager,"")
+                  ShowImageFragment(adapter.data as ArrayList<TextMessage>,position).show(childFragmentManager,"")
             }
             2 -> {
-                // ShowImageFragment(array[position].message).show(childFragmentManager,"")
+                ShowImageFragment(adapter.data as ArrayList<TextMessage>,position).show(childFragmentManager,"")
             }
         }
     }
@@ -107,7 +122,25 @@ class ChatFragment : Fragment(), Message_Adapter.onClick {
             try {
 
               if (data.getString("des_id").equals(Constant.getSharePref(requireContext()).getString(USER,"")) && data.getString("source_id").equals(arg)){
-                    adapter.data.add(TextMessage(data.getString("message"), data.getString("source_id"), Calendar.getInstance().time, Constant.TEXT))
+                  if (data.getString("type") == Constant.TEXT) {
+                      adapter.data.add(
+                          TextMessage(
+                              data.getString("message"),
+                              data.getString("source_id"),
+                              Calendar.getInstance().time,
+                              TEXT
+                          )
+                      )
+                  }else{
+                      adapter.data.add(
+                          TextMessage(
+                              data.getString("message"),
+                              data.getString("source_id"),
+                              Calendar.getInstance().time,
+                              IMAGE
+                          )
+                      )
+                  }
                     adapter.notifyDataSetChanged()
                 Log.e("ttt message ", data.toString())
                 }else {
@@ -121,21 +154,47 @@ class ChatFragment : Fragment(), Message_Adapter.onClick {
     }
 
 
-
-
-    private fun attemptSend() {
-        val message = JSONObject().apply {
-            put("message",etxt_massege.text.toString())
-            put("source_id",Constant.getSharePref(requireContext()).getString(USER,""))
-            put("des_id",arg)
-        }
-        adapter.data.add(TextMessage(etxt_massege.text.toString(),Constant.getSharePref(requireContext()).getString(USER,"").toString(), Calendar.getInstance().time, Constant.TEXT))
-        adapter.notifyDataSetChanged()
-        mSocket!!.emit("message", message)
-        etxt_massege.setText("")
+    private fun openChooseImage(){
+        PickImageDialog.build(PickSetup().setTitle("Select Image").setSystemDialog(true))
+                .setOnPickResult { onPickResult(it) }.setOnPickCancel {}.show(activity)
     }
 
 
+    private fun attemptSend(message: String,type: String) {
+        val message2 = JSONObject().apply {
+            put("message",message)
+            put("source_id",Constant.getSharePref(requireContext()).getString(USER,""))
+            put("des_id",arg)
+            put("type",type)
+        }
+        adapter.data.add(TextMessage(message.toString(),Constant.getSharePref(requireContext()).getString(USER,"").toString(), Calendar.getInstance().time, type))
+        adapter.notifyDataSetChanged()
+        mSocket!!.emit("message", message2)
+        etxt_massege.setText("")
+    }
+
+    override fun onPickResult(r: PickResult?){
+        if (r!!.error == null) {
+            val selectedImage = r.uri
+            val selectedImageBmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
+            val outputStream = ByteArrayOutputStream()
+            selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            image = ImageUpload(selectedImageBmp)
+
+            attemptSend(image,IMAGE)
+        }
+    }
+
+    private fun ImageUpload(bitmap: Bitmap): String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+        val image: String =
+                android.util.Base64.encodeToString(
+                        byteArrayOutputStream.toByteArray(),
+                        android.util.Base64.DEFAULT
+                )
+        return image
+    }
 
 
 
