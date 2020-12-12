@@ -53,7 +53,7 @@ class HomeFragment : Fragment(), UserAdapter.onClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val app = ChatApplication()
-        mSocket = app.socket
+        mSocket = app.getSocket()
         mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
         mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
         mSocket!!.on(Socket.EVENT_CONNECT, onConnect)

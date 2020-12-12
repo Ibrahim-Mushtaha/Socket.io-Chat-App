@@ -1,21 +1,14 @@
 package com.ix.ibrahim7.socketio.ui.activity
 
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.github.nkzawa.emitter.Emitter
-import com.github.nkzawa.socketio.client.Socket
-import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.R
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONException
-import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity() {

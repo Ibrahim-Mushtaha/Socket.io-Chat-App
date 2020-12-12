@@ -1,7 +1,6 @@
 package com.ix.ibrahim7.socketio.ui.fragment
 
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -28,7 +27,6 @@ import com.vansuita.pickimage.dialog.PickImageDialog
 import com.vansuita.pickimage.listeners.IPickResult
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_chat.*
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -70,7 +68,7 @@ class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
         chat_list.adapter = adapter
 
         val app = ChatApplication()
-        mSocket = app.socket
+        mSocket = app.getSocket()
         mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
         mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
         mSocket!!.on(Socket.EVENT_CONNECT, onConnect)

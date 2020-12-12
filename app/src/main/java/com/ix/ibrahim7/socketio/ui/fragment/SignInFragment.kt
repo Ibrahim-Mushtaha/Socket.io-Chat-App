@@ -1,6 +1,5 @@
 package com.ix.ibrahim7.socketio.ui.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -14,17 +13,13 @@ import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.databinding.FragmentSignInBinding
 import com.ix.ibrahim7.socketio.ui.activity.MainActivity
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.START
 import com.ix.ibrahim7.socketio.util.Constant.USER
 import com.ix.ibrahim7.socketio.util.Constant.USERID
 import com.ix.ibrahim7.socketio.util.Constant.editor
 import com.ix.ibrahim7.socketio.util.Constant.setUpStatusBar
-import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_sign_in.*
 import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 
 
