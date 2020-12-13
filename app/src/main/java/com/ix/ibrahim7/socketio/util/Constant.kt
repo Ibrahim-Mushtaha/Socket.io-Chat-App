@@ -21,6 +21,7 @@ object Constant {
     val TEXT ="Text"
     val IMAGE ="image"
     val MESSAGE ="message"
+    val JOIN ="join"
 
     fun getSharePref(context: Context) =
         context.getSharedPreferences("Share", Activity.MODE_PRIVATE)

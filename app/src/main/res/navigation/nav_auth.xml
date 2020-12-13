@@ -6,6 +6,6 @@
     app:startDestination="@id/signInFragment">
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.ix.ibrahim7.socketio.ui.fragment.SignInFragment"
+        android:name="com.ix.ibrahim7.socketio.ui.fragment.auth.SignInFragment"
         android:label="SignInFragment" />
 </navigation>

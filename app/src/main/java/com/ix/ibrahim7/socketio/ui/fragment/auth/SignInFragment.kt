@@ -1,4 +1,4 @@
-package com.ix.ibrahim7.socketio.ui.fragment
+package com.ix.ibrahim7.socketio.ui.fragment.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +12,10 @@ import android.widget.Toast
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.databinding.FragmentSignInBinding
+import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.activity.MainActivity
+import com.ix.ibrahim7.socketio.util.ChatApplication
+import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.START
 import com.ix.ibrahim7.socketio.util.Constant.USER
 import com.ix.ibrahim7.socketio.util.Constant.USERID
@@ -47,13 +50,14 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-      /*  val app = ChatApplication()
-        mSocket = app.socket
+        val app = ChatApplication()
+        mSocket = app.getSocket()
         mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
         mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
         mSocket!!.on(Socket.EVENT_CONNECT, onConnect)
         mSocket!!.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        mSocket!!.connect()*/
+        mSocket!!.on(Constant.JOIN,AllUser)
+        mSocket!!.connect()
 
         btn_login.setOnClickListener {
             if (etxt_username_login.text.isNotEmpty()) {
@@ -66,7 +70,7 @@ class SignInFragment : Fragment() {
                     putBoolean(START,true)
                     apply()
                 }
-              //  attemptSend()
+                attemptSend()
             }else{
                 Toast.makeText(requireContext(), "check your Input", Toast.LENGTH_SHORT).show()
             }
@@ -83,6 +87,12 @@ class SignInFragment : Fragment() {
 
 
 
+    private val AllUser = Emitter.Listener { args ->
+        requireActivity().runOnUiThread(Runnable {
+            val data = args[0] as String
+            Log.v("ttt LOGIN", data)
+        })
+    }
 
 
     private fun attemptSend() {
@@ -95,8 +105,6 @@ class SignInFragment : Fragment() {
         } catch (e: JSONException) {
             Log.d("me", "error send message " + e.message)
         }
-        etxt_username_login.setText("")
-       // mSocket!!.emit("msgS", message)
     }
 
 }

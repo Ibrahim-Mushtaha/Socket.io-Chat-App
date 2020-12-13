@@ -1,4 +1,4 @@
-package com.ix.ibrahim7.socketio.ui.fragment
+package com.ix.ibrahim7.socketio.ui.fragment.chat
 
 
 import android.graphics.Bitmap

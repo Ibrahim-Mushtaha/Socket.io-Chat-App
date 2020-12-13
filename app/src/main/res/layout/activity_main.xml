@@ -17,6 +17,9 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -25,8 +28,24 @@
             android:theme="@style/ToolbarTheme"
             app:title="Socket IO Chat App"
             app:titleTextColor="@android:color/white" />
+        </FrameLayout>
 
-
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/purple_700"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="fixed"
+            app:tabTextColor="@android:color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <fragment
@@ -37,4 +56,5 @@
         app:defaultNavHost="true"
         android:layout_below="@id/app_bar"
         app:navGraph="@navigation/nav_main" />
+
 </RelativeLayout>
