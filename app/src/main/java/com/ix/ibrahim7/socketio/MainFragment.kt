@@ -52,11 +52,6 @@ class MainFragment : Fragment() {
 
         val app = ChatApplication()
         mSocket = app.getSocket()
-        mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT, onConnect)
-        mSocket!!.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        // mSocket!!.on("msgS", onNewMessage)
         mSocket!!.on(Constant.JOIN, AllUser)
         mSocket!!.connect()
 
@@ -69,31 +64,17 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    var onConnect = Emitter.Listener {
-        attemptSend2()
-        Log.e("eee", "Socket Connected!")
-    }
-
-    private val onConnectError = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!") } }
-    private val onDisconnect = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!") } }
-
 
     private val AllUser = Emitter.Listener { args ->
         requireActivity().runOnUiThread(Runnable {
             val data = args[0] as String
-            if (data !=Constant.getSharePref(requireContext()).getString(Constant.USER, "ibar")) {
-               array.add(0, User(data))
-            }
+            array.clear()
+            array.distinct()
+            array.add(0, User(data))
             Log.v("ttt", data)
         })
     }
-    fun attemptSend2() {
-        try {
-            mSocket!!.emit("join", Constant.getSharePref(requireContext()).getString(Constant.USER, "ibar"))
-        } catch (e: JSONException) {
-            Log.d("me", "error send message " + e.message)
-        }
-    }
+
 
 
 

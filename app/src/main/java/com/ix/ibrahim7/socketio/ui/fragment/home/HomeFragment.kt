@@ -18,8 +18,12 @@ import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.JOIN
 import devjdelasen.com.sidebubbles.SideBubbles
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONException
 
 
@@ -45,6 +49,7 @@ class HomeFragment : Fragment(), UserAdapter.onClick {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().tabs.visibility=View.VISIBLE
         mBinding = FragmentHomeBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
@@ -78,24 +83,44 @@ class HomeFragment : Fragment(), UserAdapter.onClick {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    var onConnect = Emitter.Listener { Log.e("eee", "Socket Connected!") }
-    private val onConnectError = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!") } }
-    private val onDisconnect = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!") } }
+    var onConnect = Emitter.Listener {
+        attemptSend2()
+        Log.e("eee", "Socket Connected!") }
+
+    private val onConnectError = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+        Log.e("eee", "Socket Connected!")
+        }
+    }
+
+    private val onDisconnect = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+            Log.e("eee", "Socket Connected!")
+        }
+    }
 
 
     private val AllUser = Emitter.Listener { args ->
-        requireActivity().runOnUiThread(Runnable {
+        CoroutineScope(Dispatchers.Main).launch {
             val data = args[0] as String
             if (data !=Constant.getSharePref(requireContext()).getString(Constant.USER, "ibar")) {
-                user_Adapter.data.add(0, User(data))
+                user_Adapter.data.clear()
+                user_Adapter.data.add( User(data))
                 user_Adapter.data.distinct()
                 Log.e("eeee array", user_Adapter.data.toString())
                 user_Adapter.notifyDataSetChanged()
             }
             Log.v("ttt", data)
-        })
+        }
     }
 
+    fun attemptSend2() {
+        try {
+            mSocket!!.emit("join", Constant.getSharePref(requireContext()).getString(Constant.USER, "ibar"))
+        } catch (e: JSONException) {
+            Log.d("me", "error send message " + e.message)
+        }
+    }
 
 
 
@@ -105,7 +130,7 @@ class HomeFragment : Fragment(), UserAdapter.onClick {
                 val bundle = Bundle().apply {
                     putString("Des_id",user.username)
                 }
-                    findNavController().navigate(R.id.action_homeFragment_to_chatFragment,bundle)
+                    parentFragment?.parentFragment?.findNavController()?.navigate(R.id.action_mainFragment_to_chatFragment,bundle)
             }
         }
     }

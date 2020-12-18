@@ -54,6 +54,7 @@ class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        requireActivity().tabs.visibility=View.GONE
         setHasOptionsMenu(true)
         mBinding = FragmentChatBinding.inflate(inflater, container, false).apply {
             executePendingBindings()

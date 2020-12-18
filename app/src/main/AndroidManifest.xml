@@ -16,15 +16,15 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Socketio">
-        <activity android:name=".ui.activity.MainActivity" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
-        <activity android:name=".ui.activity.SplashActivity" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
+        <activity android:name=".ui.activity.MainActivity" android:theme="@style/Toolbar2Theme"/>
+        <activity android:name=".ui.activity.SplashActivity" android:theme="@style/Toolbar2Theme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.AuthActivity" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
+        <activity android:name=".ui.activity.AuthActivity" android:theme="@style/Toolbar2Theme"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

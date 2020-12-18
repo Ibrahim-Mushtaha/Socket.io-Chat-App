@@ -38,8 +38,8 @@ class UserAdapter(val activity: Activity,
 
 
         val currentItem = data[position]
-        holder.item.apply {
-            allcard.setOnClickListener {
+        holder.itemView.apply {
+           setOnClickListener {
                 itemclick.onClickItem(currentItem,holder.adapterPosition, 1)
             }
 

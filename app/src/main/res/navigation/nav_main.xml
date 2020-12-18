@@ -11,18 +11,14 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.ix.ibrahim7.socketio.ui.fragment.home.HomeFragment"
-        android:label="HomeFragment" >
-        <action
-            android:id="@+id/action_homeFragment_to_chatFragment"
-            app:destination="@id/chatFragment"
-            app:enterAnim="@anim/slide_up"
-            app:exitAnim="@anim/slide_down"
-            app:popEnterAnim="@anim/slide_up"
-            app:popExitAnim="@anim/slide_down" />
-    </fragment>
+        android:label="HomeFragment" />
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ix.ibrahim7.socketio.MainFragment"
         android:label="Socket.io"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
 </navigation>

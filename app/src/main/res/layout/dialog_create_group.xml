@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_id"
+    android:backgroundTint="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="18dp"
+    android:layout_marginBottom="16sp"
     android:orientation="vertical">
 
 <androidx.cardview.widget.CardView
@@ -14,7 +17,6 @@
     android:layout_gravity="center"
     app:cardElevation="4dp"
     android:backgroundTint="@color/white"
-    android:layout_margin="16sp"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -72,9 +74,10 @@
         <Button
             android:id="@+id/btn_create"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:text="Create Group"
-            android:background="@drawable/sender_shape"
+            android:background="@drawable/btn_shape"
+            android:backgroundTint="#0081F6"
             android:textColor="@android:color/white"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
