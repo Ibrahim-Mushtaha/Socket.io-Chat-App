@@ -5,6 +5,9 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Groups (var Group_name:String,var arrayList: ArrayList<User>?) : Parcelable{
-    constructor():this("",null)
-}
+data class Groups (
+        val id: String = "",
+        val name: String = "",
+        val image: String = "",
+        val userGroup: List<String> = arrayListOf()
+) : Parcelable

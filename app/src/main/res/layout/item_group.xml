@@ -16,7 +16,7 @@
         android:layout_margin="4dp"
         app:cardCornerRadius="4sp"
         app:cardElevation="4dp"
-        android:id="@+id/allcard">
+        android:backgroundTint="@color/white">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
 
 
             <ImageView
-                android:id="@+id/circleImageView"
+                android:id="@+id/tv_group_image"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:src="@drawable/ic_group_photo"
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Name"
+                android:text="@{group.name}"
                 android:textColor="@color/purple_700"
                 android:textSize="18dp"
                 android:lines="1"
@@ -50,7 +50,7 @@
                 android:ellipsize="end"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/circleImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_group_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

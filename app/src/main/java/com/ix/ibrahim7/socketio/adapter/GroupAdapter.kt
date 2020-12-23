@@ -10,32 +10,27 @@ import com.ix.ibrahim7.socketio.model.Groups
 
 
 class GroupAdapter(
-    var data: MutableList<Groups>, val itemclick: onClick
+        var data: MutableList<Groups>, val itemclick: onClick
 ) :
-    RecyclerView.Adapter<GroupAdapter.MyViewHolder>() {
+        RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
 
 
-    class MyViewHolder(val item: ItemGroupBinding) : RecyclerView.ViewHolder(item.root) {
-
-
-        val tvname = item.txtGroupName
-        val tvAll = item.allcard
+    class ViewHolder(val item: ItemGroupBinding) : RecyclerView.ViewHolder(item.root) {
 
         fun bind(n: Groups) {
             item.group = n
             item.executePendingBindings()
         }
 
-
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView_layout: ItemGroupBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.item_group, parent, false
+                LayoutInflater.from(parent.context),
+                R.layout.item_group, parent, false
         )
-        return MyViewHolder(itemView_layout)
+        return ViewHolder(itemView_layout)
     }
 
     override fun getItemCount(): Int {
@@ -43,14 +38,12 @@ class GroupAdapter(
     }
 
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-        holder.tvname.text=data[position].Group_name
-
-        holder.tvAll.setOnClickListener {
-            itemclick.onClickItem(holder.adapterPosition,1)
+        holder.itemView.apply {
+            setOnClickListener {
+                itemclick.onClickItem(holder.adapterPosition, 1)
+            }
         }
         val currentItem = data[position]
         holder.bind(currentItem)
@@ -61,8 +54,6 @@ class GroupAdapter(
     interface onClick {
         fun onClickItem(position: Int, type: Int)
     }
-
-
 
 
 }

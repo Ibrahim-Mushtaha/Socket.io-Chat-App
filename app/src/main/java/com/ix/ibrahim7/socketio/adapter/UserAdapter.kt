@@ -6,27 +6,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.ix.ibrahim7.socketio.R
+import com.ix.ibrahim7.socketio.databinding.ItemSelectUserBinding
 import com.ix.ibrahim7.socketio.databinding.ItemUserBinding
 import com.ix.ibrahim7.socketio.model.User
-import com.ix.ibrahim7.socketio.util.Constant
-import kotlinx.android.synthetic.main.item_user.view.*
+import kotlinx.android.synthetic.main.item_select_user.view.*
+import kotlinx.android.synthetic.main.item_user.view.txt_name
 
 
 class UserAdapter(val activity: Activity,
-    var data: MutableList<User>, val itemclick: onClick
+                  var data: MutableList<User>, val itemclick: onClick, val type: Int
 ) :
-        RecyclerView.Adapter<UserAdapter.MyViewHolder>() {
+        RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
 
-    class MyViewHolder(val item: ItemUserBinding) : RecyclerView.ViewHolder(item.root)
+    class UserViewHolder(item: View) : RecyclerView.ViewHolder(item)
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView_layout: ItemUserBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context),
-                R.layout.item_user, parent, false)
-        return MyViewHolder(itemView_layout)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+        when (type) {
+            1 -> {
+                val itemView_layout: ItemUserBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context),
+                        R.layout.item_user, parent, false)
+                return UserViewHolder(itemView_layout.root)
+            }
+            else -> {
+                val itemView_layout: ItemSelectUserBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context),
+                        R.layout.item_select_user, parent, false)
+                return UserViewHolder(itemView_layout.root)
+            }
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -34,30 +44,42 @@ class UserAdapter(val activity: Activity,
     }
 
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
 
 
         val currentItem = data[position]
         holder.itemView.apply {
-           setOnClickListener {
-                itemclick.onClickItem(currentItem,holder.adapterPosition, 1)
+
+            when (type) {
+                1 -> {
+                    txt_name.text = data[position].username
+                }
+                else -> {
+                    checkBox.text = data[position].username
+
+                    checkBox.setOnClickListener {
+                        if (checkBox.isChecked) {
+                            itemclick.onClickItem(currentItem, holder.adapterPosition, 1)
+                        } else {
+                            itemclick.onClickItem(currentItem, holder.adapterPosition, 2)
+                            checkBox.isChecked = false
+                        }
+                    }
+                }
+            }
+            setOnClickListener {
+                itemclick.onClickItem(currentItem, holder.adapterPosition, 1)
             }
 
-            holder.itemView.apply {
-                txt_name.text =data[position].username
-            }
 
         }
-
 
 
     }
 
     interface onClick {
-        fun onClickItem(user: User,position: Int, type: Int)
+        fun onClickItem(user: User, position: Int, type: Int)
     }
-
-
 
 
 }

@@ -5,9 +5,7 @@
 
     <data>
 
-        <variable
-            name="CheckBox_user"
-            type="com.ix.ibrahim7.socketio.model.User" />
+
     </data>
 
 
@@ -37,24 +35,10 @@
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{CheckBox_user.username}"
                 android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_circleImageView" />
 
-            <TextView
-                android:id="@+id/txt_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{CheckBox_user.username}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/checkBox"
-                app:layout_constraintEnd_toEndOf="@+id/tv_circleImageView"
-                app:layout_constraintHorizontal_bias="0.08"
-                app:layout_constraintStart_toEndOf="@+id/checkBox"
-                app:layout_constraintTop_toTopOf="@+id/checkBox" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

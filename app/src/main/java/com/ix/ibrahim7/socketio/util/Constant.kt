@@ -9,19 +9,32 @@ import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.model.User
 import java.util.ArrayList
 
 object Constant {
 
+    const val TAG ="eee"
     const val USER ="user"
     const val USERID ="userid"
     const val START = "start"
+    val JOIN ="join"
+    val ALLUSERS ="AllUsers"
+    val GROUPS ="Group"
+    val ALLGROUPS ="AllGroup"
+    const val ID = "id"
+    const val NAME = "username"
+    const val GROUPNAME = "name"
+    const val USER_GROUP = "userGroup"
     val TEXT ="Text"
     val IMAGE ="image"
     val MESSAGE ="message"
-    val JOIN ="join"
+    val SOURCE_ID ="source_id"
+    val DES_ID ="des_id"
+    val TYPE ="type"
 
     fun getSharePref(context: Context) =
         context.getSharedPreferences("Share", Activity.MODE_PRIVATE)
@@ -36,6 +49,8 @@ object Constant {
             .error(R.drawable.ic_launcher_background)
             .into(imageView)
     }
+
+    fun getUser(context: Context):User = Gson().fromJson(getSharePref(context).getString(USER,"").toString(), User::class.java)
 
 
     fun getBitmapImage(activity: Activity,path:ByteArray,imageView: ImageView){

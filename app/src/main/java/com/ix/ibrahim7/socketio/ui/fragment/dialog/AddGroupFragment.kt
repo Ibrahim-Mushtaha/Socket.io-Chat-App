@@ -1,76 +1,84 @@
 package com.ix.ibrahim7.socketio.ui.fragment.dialog
 
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
-import com.bumptech.glide.Glide
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ix.ibrahim7.socketio.R
-import com.ix.ibrahim7.socketio.adapter.Select_User_Adapter
-import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.adapter.UserAdapter
+import com.ix.ibrahim7.socketio.databinding.DialogCreateGroupBinding
+import com.ix.ibrahim7.socketio.databinding.FragmentHomeBinding
+import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.GROUPNAME
+import com.ix.ibrahim7.socketio.util.Constant.GROUPS
+import com.ix.ibrahim7.socketio.util.Constant.ID
+import com.ix.ibrahim7.socketio.util.Constant.IMAGE
+import com.ix.ibrahim7.socketio.util.Constant.NAME
+import com.ix.ibrahim7.socketio.util.Constant.TAG
+import com.ix.ibrahim7.socketio.util.Constant.USER_GROUP
+import com.ix.ibrahim7.socketio.util.Constant.getSharePref
+import com.ix.ibrahim7.socketio.util.Constant.getUser
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_create_group.*
 import kotlinx.android.synthetic.main.dialog_create_group.view.*
-import kotlinx.android.synthetic.main.fragment_sign_in.*
-import kotlinx.android.synthetic.main.item_full_image.*
-import kotlinx.android.synthetic.main.item_full_image.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.reflect.Type
+import java.util.*
+import kotlin.collections.ArrayList
 
-class AddGroupFragment(val data: ArrayList<User>) : BottomSheetDialogFragment(),Select_User_Adapter.onClickListener {
+class AddGroupFragment(val data: ArrayList<User>) : BottomSheetDialogFragment(),UserAdapter.onClick {
+
+    private lateinit var mBinding: DialogCreateGroupBinding
 
     private val user_Adapter by lazy {
-        Select_User_Adapter(requireActivity(),data,this)
+        UserAdapter(requireActivity(),data,this,2)
     }
 
-    var selectArray_checked = ArrayList<User>()
+    var selected_User = ArrayList<User>()
     private var mSocket: Socket? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.dialog_create_group, container, false)
-      //  dialog!!.requestWindowFeature(STYLE_NO_TITLE)
+        mBinding = DialogCreateGroupBinding.inflate(inflater, container, false).apply {
+            executePendingBindings()
+        }
         dialog!!.setCancelable(false)
-      //  dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-      //  val win=dialog!!.window
-      //  win!!.setGravity(Gravity.CENTER)
-        return view
+        mSocket = ChatApplication().getSocket()
+        return mBinding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mBinding.apply {
 
-        val app = ChatApplication()
-        mSocket = app.getSocket()
-        mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT, onConnect)
-        mSocket!!.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        mSocket!!.on(Constant.JOIN,AllUser)
-        mSocket!!.connect()
+            listSelectUser.apply {
+                adapter = user_Adapter
+            }
 
-        setupClickListeners(view)
+            btnCreate.setOnClickListener {
+                createNewGroup()
+                dismiss()
+            }
 
-
+        }
 
     }
 
@@ -83,64 +91,36 @@ class AddGroupFragment(val data: ArrayList<User>) : BottomSheetDialogFragment(),
     }
 
 
-    private fun setupClickListeners(view: View) {
 
-        view.apply {
-
-            list_select_user.apply {
-                adapter = user_Adapter
+    private fun createNewGroup() {
+        val name = mBinding.etxtGroupName.text.toString()
+        try {
+            val group = JSONObject()
+            val array = JSONArray()
+            for (user in selected_User) {
+                array.put(user.id)
             }
-
-            btn_create.setOnClickListener {
-                attemptSend(selectArray_checked)
-                dismiss()
+            array.put(getUser(requireContext()).id)
+            group.apply {
+                put(GROUPNAME, name)
+                put(USER_GROUP, array)
+                put(ID, UUID.randomUUID().toString())
+                put(IMAGE, "")
             }
-
+            mSocket!!.emit(GROUPS, group)
+        } catch (e: JSONException) {
+            Log.v("$TAG GROUPS", "error add group " + e.message)
         }
     }
 
-    override fun onClickItem(position: Int, type: Int) {
+    override fun onClickItem(user: User, position: Int, type: Int) {
         when (type) {
             1 -> {
-                selectArray_checked.add(User(data[position].username))
-                Log.e("eeee",data[position].username)
+                selected_User.add(user)
             }
             2->{
-                selectArray_checked.remove(User(data[position].username))
-                Log.e("eeee",data[position].username)
+                selected_User.remove(user)
             }
-        }
-    }
-
-
-    var onConnect = Emitter.Listener {
-        Log.e("eee", "Socket Connected!")
-    }
-    private val onConnectError = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!")} }
-    private val onDisconnect = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!")} }
-
-
-
-    private val AllUser = Emitter.Listener { args ->
-        CoroutineScope(Dispatchers.Main).launch {
-                val data = args[0] as String
-                Log.v("ttt LOGIN", data)
-        }
-    }
-
-
-    private fun attemptSend(arrayList: ArrayList<User>) {
-        try {
-            val data = JSONObject().apply {
-                put("member",arrayList.toString())
-            }
-            val group = JSONObject().apply {
-                put("group_name",etxt_Group_name.text.toString().trim())
-                put("member",data)
-            }
-            mSocket!!.emit("group", group)
-        } catch (e: JSONException) {
-            Log.d("me", "error send message " + e.message)
         }
     }
 

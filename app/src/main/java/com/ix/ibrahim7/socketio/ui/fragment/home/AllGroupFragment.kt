@@ -25,6 +25,8 @@ import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.ALLGROUPS
+import com.ix.ibrahim7.socketio.util.Constant.getUser
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_all_group.*
 import kotlinx.android.synthetic.main.fragment_all_group.view.*
@@ -64,13 +66,18 @@ class AllGroupFragment : Fragment() , GroupAdapter.onClick{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val app = ChatApplication()
-        mSocket = app.getSocket()
-        mSocket!!.on("group",AllGroups)
-        mSocket!!.connect()
 
+        ChatApplication().apply {
+            getEmitterListener(ALLGROUPS,AllGroup)
+            mSocket = getSocket()
+        }
 
-        list_all_group.apply {
+        mBinding.swipeToRefresh.setOnRefreshListener {
+            mBinding.swipeToRefresh.isRefreshing=false
+            mSocket!!.emit(ALLGROUPS, true)
+        }
+
+        mBinding.listAllGroup.apply {
             adapter = group_adapter
             layoutAnimation = AnimationUtils.loadLayoutAnimation(
                     requireContext(),
@@ -82,17 +89,30 @@ class AllGroupFragment : Fragment() , GroupAdapter.onClick{
     }
 
 
-    private val AllGroups = Emitter.Listener { args ->
+    private val AllGroup = Emitter.Listener { args ->
         CoroutineScope(Dispatchers.Main).launch {
-            mutableListTutorialType =
-                    object : TypeToken<MutableList<User>>() {}.type
-            val data = args[0] as JSONObject
-            //group_adapter.data.clear()
-            //group_adapter.data.add(Groups(data.getString("group_name"),data.getJSONObject("member").get("member")))
-            //group_adapter.data.distinct()
-            //group_adapter.notifyDataSetChanged()
-            Log.v("ttt group", data.toString())
-            Log.v("ttt group json",data.getJSONObject("member").getString("member").toString())
+            val data = args.size
+            if (data == 0){
+                mBinding.emptyContanier.visibility = View.VISIBLE
+            }else{
+                mBinding.emptyContanier.visibility = View.GONE
+            }
+
+
+            val mutableListType: Type = object : TypeToken<List<Groups>>() {}.type
+            val groups = Gson().fromJson<List<Groups>>(args[0].toString(), mutableListType)
+            val myGroup = ArrayList<Groups>()
+            groups.map { groupsUser ->
+                groupsUser.userGroup.map { userid ->
+                      if (userid == getUser(requireContext()).id) {
+                    myGroup.add(groupsUser)
+                     }
+                }
+            }
+            group_adapter.data.clear()
+            group_adapter.data.addAll(myGroup)
+            group_adapter.notifyDataSetChanged()
+            Log.v("${Constant.TAG} AllGroup", myGroup.toString())
         }
     }
 

@@ -16,13 +16,21 @@ import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.activity.MainActivity
 import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.ID
+import com.ix.ibrahim7.socketio.util.Constant.JOIN
+import com.ix.ibrahim7.socketio.util.Constant.NAME
 import com.ix.ibrahim7.socketio.util.Constant.START
+import com.ix.ibrahim7.socketio.util.Constant.TAG
 import com.ix.ibrahim7.socketio.util.Constant.USER
 import com.ix.ibrahim7.socketio.util.Constant.USERID
 import com.ix.ibrahim7.socketio.util.Constant.editor
 import com.ix.ibrahim7.socketio.util.Constant.setUpStatusBar
 import kotlinx.android.synthetic.main.fragment_sign_in.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 
@@ -31,13 +39,14 @@ class SignInFragment : Fragment() {
 
     private lateinit var mBinding: FragmentSignInBinding
     private var mSocket: Socket? = null
-    lateinit var root:View
+    lateinit var root: View
 
+    private val id = UUID.randomUUID().toString()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
         setUpStatusBar(requireActivity(), 1)
@@ -50,28 +59,21 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        val app = ChatApplication()
-        mSocket = app.getSocket()
-        mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT, onConnect)
-        mSocket!!.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        mSocket!!.on(Constant.JOIN,AllUser)
-        mSocket!!.connect()
+        ChatApplication().apply {
+            getEmitterListener(Socket.EVENT_CONNECT_ERROR, onConnectError)
+            getEmitterListener(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
+            getEmitterListener(Socket.EVENT_CONNECT, onConnect)
+            getEmitterListener(Socket.EVENT_DISCONNECT, onDisconnect)
+            getSocket()!!.connect()
+        }
 
         btn_login.setOnClickListener {
             if (etxt_username_login.text.isNotEmpty()) {
                 startActivity(Intent(requireContext(), MainActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 })
-                editor(requireContext()).apply {
-                    putString(USER,etxt_username_login.text.toString().trim())
-                    putString(USERID,UUID.randomUUID().toString())
-                    putBoolean(START,true)
-                    apply()
-                }
                 attemptSend()
-            }else{
+            } else {
                 Toast.makeText(requireContext(), "check your Input", Toast.LENGTH_SHORT).show()
             }
         }
@@ -79,20 +81,9 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    var onConnect = Emitter.Listener {
-        Log.e("eee", "Socket Connected!")
-    }
-    private val onConnectError = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!")} }
-    private val onDisconnect = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!")} }
-
-
-
-    private val AllUser = Emitter.Listener { args ->
-        requireActivity().runOnUiThread(Runnable {
-            val data = args[0] as String
-            Log.v("ttt LOGIN", data)
-        })
-    }
+    var onConnect = Emitter.Listener {}
+    private val onConnectError = Emitter.Listener {}
+    private val onDisconnect = Emitter.Listener {}
 
 
     private fun attemptSend() {
@@ -101,9 +92,18 @@ class SignInFragment : Fragment() {
             return
         }
         try {
-            mSocket!!.emit("join", etxt_username_login.text.toString().trim())
+            val user = JSONObject().apply {
+                put(NAME, etxt_username_login.text.toString().trim())
+                put(ID, id)
+            }
+            editor(requireContext()).apply {
+                putString(USER, user.toString())
+                putBoolean(START, true)
+                apply()
+            }
+            mSocket!!.emit(JOIN, user)
         } catch (e: JSONException) {
-            Log.d("me", "error send message " + e.message)
+            Log.d("$TAG JOIN", "error join" + e.message)
         }
     }
 

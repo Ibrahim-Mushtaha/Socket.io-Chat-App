@@ -11,42 +11,50 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
-import com.ix.ibrahim7.socketio.adapter.Message_Adapter
+import com.ix.ibrahim7.socketio.adapter.MessageAdapter
 import com.ix.ibrahim7.socketio.databinding.FragmentChatBinding
 import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.fragment.dialog.ShowImageFragment
 import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.DES_ID
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
 import com.ix.ibrahim7.socketio.util.Constant.MESSAGE
+import com.ix.ibrahim7.socketio.util.Constant.SOURCE_ID
 import com.ix.ibrahim7.socketio.util.Constant.TEXT
+import com.ix.ibrahim7.socketio.util.Constant.TYPE
 import com.ix.ibrahim7.socketio.util.Constant.USER
+import com.ix.ibrahim7.socketio.util.Constant.getUser
 import com.vansuita.pickimage.bean.PickResult
 import com.vansuita.pickimage.bundle.PickSetup
 import com.vansuita.pickimage.dialog.PickImageDialog
 import com.vansuita.pickimage.listeners.IPickResult
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
+class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
 
     private lateinit var mBinding: FragmentChatBinding
 
     private var mSocket: Socket? = null
 
+
     var image = ""
 
     private val adapter by lazy {
-        Message_Adapter(requireActivity(), ArrayList(), this)
+        MessageAdapter(requireActivity(), ArrayList(), this)
     }
 
     private val arg by lazy {
-        requireArguments().getString("Des_id")
+        requireArguments().getParcelable<User>(USER)!!
     }
 
     override fun onCreateView(
@@ -59,31 +67,28 @@ class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
         mBinding = FragmentChatBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
+
         return mBinding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().toolbar.title =arg
+        requireActivity().toolbar.title =arg.username
         chat_list.adapter = adapter
 
-        val app = ChatApplication()
-        mSocket = app.getSocket()
-        mSocket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
-        mSocket!!.on(Socket.EVENT_CONNECT, onConnect)
-        mSocket!!.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        mSocket!!.on(MESSAGE, onNewMessage)
-        mSocket!!.connect()
+        ChatApplication().apply {
+            getEmitterListener(MESSAGE, onNewMessage)
+            mSocket = getSocket()
+        }
 
 
 
-        btn_send.setOnClickListener {
+        mBinding.btnSend.setOnClickListener {
             attemptSend(etxt_massege.text.toString(), TEXT)
         }
 
-        btn_send_image.setOnClickListener {
+        mBinding.btnSendImage.setOnClickListener {
             openChooseImage()
         }
 
@@ -104,41 +109,35 @@ class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
 
 
 
-    var onConnect = Emitter.Listener {
-        Log.e("eee", "Socket Connected!")
-    }
-
-    private val onConnectError = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!") } }
-    private val onDisconnect = Emitter.Listener { requireActivity().runOnUiThread { Log.e("eee", "Socket Connected!") } }
-
-
 
 
 
     private val onNewMessage = Emitter.Listener { args ->
-        requireActivity().runOnUiThread(Runnable {
-            val data =args[0] as JSONObject
+        CoroutineScope(Dispatchers.Main).launch {
             try {
-
-              if (data.getString("des_id").equals(Constant.getSharePref(requireContext()).getString(USER,"")) && data.getString("source_id").equals(arg)){
-                  if (data.getString("type") == Constant.TEXT) {
-                      adapter.data.add(
-                          TextMessage(
-                              data.getString("message"),
-                              data.getString("source_id"),
-                              Calendar.getInstance().time,
-                              TEXT
+                val data =args[0] as JSONObject
+                if (data.getString(DES_ID).equals(getUser(requireContext()).id) && data.getString(SOURCE_ID).equals(arg.id)){
+                  when(data.getString(TYPE)){
+                      TEXT ->{
+                          adapter.data.add(
+                                  TextMessage(
+                                          data.getString(MESSAGE),
+                                          data.getString(SOURCE_ID),
+                                          Calendar.getInstance().time,
+                                          TEXT
+                                  )
                           )
-                      )
-                  }else{
-                      adapter.data.add(
-                          TextMessage(
-                              data.getString("message"),
-                              data.getString("source_id"),
-                              Calendar.getInstance().time,
-                              IMAGE
+                      }
+                      else ->{
+                          adapter.data.add(
+                                  TextMessage(
+                                          data.getString(MESSAGE),
+                                          data.getString(SOURCE_ID),
+                                          Calendar.getInstance().time,
+                                          IMAGE
+                                  )
                           )
-                      )
+                      }
                   }
                     adapter.notifyDataSetChanged()
                 Log.e("ttt message ", data.toString())
@@ -149,7 +148,7 @@ class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
                Log.e("eee ex",e.message.toString())
             }
 
-        })
+        }
     }
 
 
@@ -161,14 +160,14 @@ class ChatFragment : Fragment(), Message_Adapter.onClick, IPickResult {
 
     private fun attemptSend(message: String,type: String) {
         val message2 = JSONObject().apply {
-            put("message",message)
-            put("source_id",Constant.getSharePref(requireContext()).getString(USER,""))
-            put("des_id",arg)
-            put("type",type)
+            put(MESSAGE,message)
+            put(SOURCE_ID, getUser(requireContext()).id)
+            put(DES_ID,arg.id)
+            put(TYPE,type)
         }
-        adapter.data.add(TextMessage(message.toString(),Constant.getSharePref(requireContext()).getString(USER,"").toString(), Calendar.getInstance().time, type))
+        adapter.data.add(TextMessage(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
         adapter.notifyDataSetChanged()
-        mSocket!!.emit("message", message2)
+        mSocket!!.emit(MESSAGE, message2)
         etxt_massege.setText("")
     }
 
