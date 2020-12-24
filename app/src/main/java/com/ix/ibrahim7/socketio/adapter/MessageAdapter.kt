@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.item_reception_message.view.*
 import kotlinx.android.synthetic.main.item_sender_image.view.*
 import kotlinx.android.synthetic.main.item_sender_message.view.*
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class MessageAdapter(
@@ -23,20 +24,20 @@ class MessageAdapter(
 ) :
         RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
+    var userid=getUser(activity).id
 
     class ViewHolder(item: View) : RecyclerView.ViewHolder(item)
-
     override fun getItemViewType(position: Int): Int {
         when (data[position].type) {
             TEXT -> {
-                if (data[position].SenderName == getUser(activity).id) {
+                if (data[position].SenderName == userid) {
                     return R.layout.item_sender_message
                 } else {
                     return R.layout.item_reception_message
                 }
             }
             else -> {
-                if (data[position].SenderName == getUser(activity).id) {
+                if (data[position].SenderName == userid) {
                     return R.layout.item_sender_image
                 } else {
                     return R.layout.item_reception_image
@@ -61,7 +62,7 @@ class MessageAdapter(
         holder.itemView.apply {
             when (data[position].type) {
                 TEXT -> {
-                    if (data[position].SenderName == getUser(activity).id) {
+                    if (data[position].SenderName == userid) {
                         txt_name.text = data[position].message
                         holder.itemView.txt_date.text =
                                 android.text.format.DateFormat.format("hh:mm a", data[position].date)
@@ -72,7 +73,7 @@ class MessageAdapter(
                     }
                 }
                 else -> {
-                    if (data[position].SenderName == getUser(activity).id) {
+                    if (data[position].SenderName == userid) {
                         txt_date_image.text =
                                 android.text.format.DateFormat.format("hh:mm a", data[position].date)
 

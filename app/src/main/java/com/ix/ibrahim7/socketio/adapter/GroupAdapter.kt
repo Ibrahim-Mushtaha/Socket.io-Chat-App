@@ -42,7 +42,7 @@ class GroupAdapter(
 
         holder.itemView.apply {
             setOnClickListener {
-                itemclick.onClickItem(holder.adapterPosition, 1)
+                itemclick.onClickItem(data[position],holder.adapterPosition, 1)
             }
         }
         val currentItem = data[position]
@@ -52,7 +52,7 @@ class GroupAdapter(
     }
 
     interface onClick {
-        fun onClickItem(position: Int, type: Int)
+        fun onClickItem(group: Groups,position: Int, type: Int)
     }
 
 

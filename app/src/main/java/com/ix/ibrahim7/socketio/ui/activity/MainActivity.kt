@@ -10,6 +10,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.databinding.ActivityMainBinding
+import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.setUpStatusBar
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpStatusBar(this, 2)
 
         setSupportActionBar(toolbar)
 

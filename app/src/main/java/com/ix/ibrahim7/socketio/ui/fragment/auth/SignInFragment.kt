@@ -49,7 +49,6 @@ class SignInFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        setUpStatusBar(requireActivity(), 1)
         mBinding = FragmentSignInBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
@@ -64,6 +63,7 @@ class SignInFragment : Fragment() {
             getEmitterListener(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
             getEmitterListener(Socket.EVENT_CONNECT, onConnect)
             getEmitterListener(Socket.EVENT_DISCONNECT, onDisconnect)
+            mSocket = getSocket()
             getSocket()!!.connect()
         }
 

@@ -2,33 +2,32 @@ package com.ix.ibrahim7.socketio
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ix.ibrahim7.socketio.adapter.UserAdapter
 import com.ix.ibrahim7.socketio.adapter.ViewPagerLogin
 import com.ix.ibrahim7.socketio.databinding.FragmentMainBinding
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.fragment.dialog.AddGroupFragment
 import com.ix.ibrahim7.socketio.ui.fragment.home.AllGroupFragment
 import com.ix.ibrahim7.socketio.ui.fragment.home.HomeFragment
+import com.ix.ibrahim7.socketio.ui.viewmodel.HomeViewModel
 import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.ALLUSERS
 import com.ix.ibrahim7.socketio.util.Constant.TAG
-import com.ix.ibrahim7.socketio.util.Constant.USER
-import com.ix.ibrahim7.socketio.util.Constant.getSharePref
 import com.ix.ibrahim7.socketio.util.Constant.getUser
+import com.ix.ibrahim7.socketio.util.Constant.removeDuplicates
 import devjdelasen.com.sidebubbles.SideBubbles
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.fragment_sign_in.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,8 +44,12 @@ class MainFragment : Fragment() {
 
     private lateinit var mBinding: FragmentMainBinding
     var array = ArrayList<User>()
-
     private var mSocket: Socket? = null
+
+
+    private val viewModel by lazy {
+    ViewModelProvider(this)[HomeViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,14 +106,16 @@ class MainFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             val mutableListType: Type = object : TypeToken<List<User>>() {}.type
             val users = Gson().fromJson<List<User>>(args[0].toString(), mutableListType)
+            array.clear()
             users.forEach {users->
                 if (users.username != getUser(requireContext()).username) {
-                    array.clear()
-                    array.add(users) // id
+                    array.add(0,users)
                     array.distinct()
                     Log.v("$TAG User Array", array.toString())
                 }
             }
+            array = removeDuplicates(array)!!
+            viewModel.getUsers(array)
         }
     }
 

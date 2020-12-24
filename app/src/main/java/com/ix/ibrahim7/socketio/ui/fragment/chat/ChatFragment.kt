@@ -13,11 +13,14 @@ import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.adapter.MessageAdapter
 import com.ix.ibrahim7.socketio.databinding.FragmentChatBinding
+import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.model.TextMessage
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.fragment.dialog.ShowImageFragment
 import com.ix.ibrahim7.socketio.util.ChatApplication
+import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.DES_ID
+import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
 import com.ix.ibrahim7.socketio.util.Constant.MESSAGE
 import com.ix.ibrahim7.socketio.util.Constant.SOURCE_ID
@@ -48,14 +51,27 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
 
     var image = ""
+    var desID=""
+    var SourceID=""
 
     private val adapter by lazy {
         MessageAdapter(requireActivity(), ArrayList(), this)
     }
 
-    private val arg by lazy {
+
+    private val user_details by lazy {
         requireArguments().getParcelable<User>(USER)!!
     }
+
+    private val group_details by lazy {
+        requireArguments().getParcelable<Groups>(GROUPS)!!
+    }
+
+    private val getType by lazy {
+        requireArguments().getInt(TYPE)
+    }
+
+
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -74,7 +90,12 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().toolbar.title =arg.username
+
+        when(getType){
+            1->requireActivity().toolbar.title =user_details.username
+            else -> requireActivity().toolbar.title =group_details.name
+        }
+
         chat_list.adapter = adapter
 
         ChatApplication().apply {
@@ -116,34 +137,66 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 val data =args[0] as JSONObject
-                if (data.getString(DES_ID).equals(getUser(requireContext()).id) && data.getString(SOURCE_ID).equals(arg.id)){
-                  when(data.getString(TYPE)){
-                      TEXT ->{
-                          adapter.data.add(
-                                  TextMessage(
-                                          data.getString(MESSAGE),
-                                          data.getString(SOURCE_ID),
-                                          Calendar.getInstance().time,
-                                          TEXT
+                when(getType) {
+                  1->{
+                      if (data.getString(DES_ID).equals(getUser(requireContext()).id) && data.getString(SOURCE_ID).equals(user_details.id)) {
+                        //  adapter.userid=getUser(requireContext()).id
+                          when (data.getString(TYPE)) {
+                              TEXT -> {
+                                  adapter.data.add(
+                                          TextMessage(
+                                                  data.getString(MESSAGE),
+                                                  data.getString(SOURCE_ID),
+                                                  Calendar.getInstance().time,
+                                                  TEXT
+                                          )
                                   )
-                          )
-                      }
-                      else ->{
-                          adapter.data.add(
-                                  TextMessage(
-                                          data.getString(MESSAGE),
-                                          data.getString(SOURCE_ID),
-                                          Calendar.getInstance().time,
-                                          IMAGE
+                              }
+                              else -> {
+                                  adapter.data.add(
+                                          TextMessage(
+                                                  data.getString(MESSAGE),
+                                                  data.getString(SOURCE_ID),
+                                                  Calendar.getInstance().time,
+                                                  IMAGE
+                                          )
                                   )
-                          )
+                              }
+                          }
+                          adapter.notifyDataSetChanged()
+                          Log.e("ttt message ", data.toString())
                       }
                   }
-                    adapter.notifyDataSetChanged()
-                Log.e("ttt message ", data.toString())
-                }else {
-                    Log.e("ttt", data.getString("des_id"))
-                }
+                    2-> {
+                        if (data.getString(DES_ID).contains(getUser(requireContext()).id)) {
+                       //     adapter.userid=getUser(requireContext()).id
+                            when (data.getString(TYPE)) {
+                                TEXT -> {
+                                    adapter.data.add(
+                                            TextMessage(
+                                                    data.getString(MESSAGE),
+                                                    data.getString(SOURCE_ID),
+                                                    Calendar.getInstance().time,
+                                                    TEXT
+                                            )
+                                    )
+                                }
+                                else -> {
+                                    adapter.data.add(
+                                            TextMessage(
+                                                    data.getString(MESSAGE),
+                                                    data.getString(SOURCE_ID),
+                                                    Calendar.getInstance().time,
+                                                    IMAGE
+                                            )
+                                    )
+                                }
+                            }
+                            adapter.notifyDataSetChanged()
+                            Log.e("ttt message ", data.toString())
+                        }
+                    }
+                    }
             } catch (e: Exception) {
                Log.e("eee ex",e.message.toString())
             }
@@ -162,12 +215,17 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
         val message2 = JSONObject().apply {
             put(MESSAGE,message)
             put(SOURCE_ID, getUser(requireContext()).id)
-            put(DES_ID,arg.id)
+            put(DES_ID,getDesID(getType))
             put(TYPE,type)
         }
-        adapter.data.add(TextMessage(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
-        adapter.notifyDataSetChanged()
-        mSocket!!.emit(MESSAGE, message2)
+
+        when(getType) {
+                1->{
+                    adapter.data.add(TextMessage(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
+                    adapter.notifyDataSetChanged ()
+                    }
+        }
+        mSocket !!. emit (MESSAGE, message2)
         etxt_massege.setText("")
     }
 
@@ -182,6 +240,16 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
             attemptSend(image,IMAGE)
         }
     }
+
+
+    private fun getDesID(type:Int):String{
+        when(type){
+            1->desID =user_details.id
+            2->desID =group_details.userGroup.toString()
+        }
+        return desID
+    }
+
 
     private fun ImageUpload(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()

@@ -23,9 +23,12 @@ import com.ix.ibrahim7.socketio.databinding.FragmentHomeBinding
 import com.ix.ibrahim7.socketio.databinding.FragmentMainBinding
 import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.model.User
+import com.ix.ibrahim7.socketio.ui.viewmodel.GroupsViewModel
 import com.ix.ibrahim7.socketio.util.ChatApplication
 import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.ALLGROUPS
+import com.ix.ibrahim7.socketio.util.Constant.GROUPS
+import com.ix.ibrahim7.socketio.util.Constant.TYPE
 import com.ix.ibrahim7.socketio.util.Constant.getUser
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_all_group.*
@@ -41,15 +44,19 @@ import java.lang.reflect.Type
  */
 class AllGroupFragment : Fragment() , GroupAdapter.onClick{
 
-    var array = ArrayList<Groups>()
-    lateinit var mutableListTutorialType: Type
+
     private val group_adapter by lazy {
-        GroupAdapter(array, this)
+        GroupAdapter(ArrayList(), this)
     }
+
     private lateinit var mBinding: FragmentAllGroupBinding
     private var mSocket: Socket? = null
 
-    lateinit var root: View
+    private var showData = false
+
+    private val viewModel by lazy {
+        ViewModelProvider(this)[GroupsViewModel::class.java]
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -72,6 +79,21 @@ class AllGroupFragment : Fragment() , GroupAdapter.onClick{
             mSocket = getSocket()
         }
 
+        if (!showData) mSocket!!.emit(ALLGROUPS, true)
+
+        viewModel.dataGroupLiveData.observe(viewLifecycleOwner, Observer {groups->
+            group_adapter.data.clear()
+            groups.map { groupsUser ->
+                groupsUser.userGroup.map { userid ->
+                    if (userid == getUser(requireContext()).id) {
+                        group_adapter.data.add(groupsUser)
+                    }
+                }
+            }
+            group_adapter.notifyDataSetChanged()
+            if (group_adapter.data.isEmpty()) mBinding.emptyContanier.visibility = View.VISIBLE else mBinding.emptyContanier.visibility = View.GONE
+        })
+
         mBinding.swipeToRefresh.setOnRefreshListener {
             mBinding.swipeToRefresh.isRefreshing=false
             mSocket!!.emit(ALLGROUPS, true)
@@ -91,36 +113,21 @@ class AllGroupFragment : Fragment() , GroupAdapter.onClick{
 
     private val AllGroup = Emitter.Listener { args ->
         CoroutineScope(Dispatchers.Main).launch {
-            val data = args.size
-            if (data == 0){
-                mBinding.emptyContanier.visibility = View.VISIBLE
-            }else{
-                mBinding.emptyContanier.visibility = View.GONE
-            }
-
-
             val mutableListType: Type = object : TypeToken<List<Groups>>() {}.type
             val groups = Gson().fromJson<List<Groups>>(args[0].toString(), mutableListType)
-            val myGroup = ArrayList<Groups>()
-            groups.map { groupsUser ->
-                groupsUser.userGroup.map { userid ->
-                      if (userid == getUser(requireContext()).id) {
-                    myGroup.add(groupsUser)
-                     }
-                }
-            }
-            group_adapter.data.clear()
-            group_adapter.data.addAll(myGroup)
-            group_adapter.notifyDataSetChanged()
-            Log.v("${Constant.TAG} AllGroup", myGroup.toString())
+            viewModel.addGroupListener((groups as ArrayList<Groups>?)!!)
         }
     }
 
 
-    override fun onClickItem(position: Int, type: Int) {
+    override fun onClickItem(group: Groups,position: Int, type: Int) {
      when(type){
          1->{
-
+             val bundle = Bundle().apply {
+                 putParcelable(GROUPS,group)
+                 putInt(TYPE,2)
+             }
+             parentFragment?.parentFragment?.findNavController()?.navigate(R.id.action_mainFragment_to_chatFragment,bundle)
          }
      }
 

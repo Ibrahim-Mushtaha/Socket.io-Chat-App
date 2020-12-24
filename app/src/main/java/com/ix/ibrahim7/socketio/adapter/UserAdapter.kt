@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_user.view.txt_name
 
 
 class UserAdapter(val activity: Activity,
-                  var data: MutableList<User>, val itemclick: onClick, val type: Int
+                  var data: ArrayList<User>, val itemclick: onClick, val type: Int
 ) :
         RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
