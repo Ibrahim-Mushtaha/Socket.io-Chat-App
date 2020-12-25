@@ -1,14 +1,11 @@
 package com.ix.ibrahim7.socketio.ui.fragment.home
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,38 +15,31 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.adapter.GroupAdapter
-import com.ix.ibrahim7.socketio.databinding.FragmentAllGroupBinding
-import com.ix.ibrahim7.socketio.databinding.FragmentHomeBinding
-import com.ix.ibrahim7.socketio.databinding.FragmentMainBinding
+import com.ix.ibrahim7.socketio.databinding.FragmentListGroupBinding
 import com.ix.ibrahim7.socketio.model.Groups
-import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.viewmodel.GroupsViewModel
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.ALLGROUPS
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.TYPE
 import com.ix.ibrahim7.socketio.util.Constant.getUser
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_all_group.*
-import kotlinx.android.synthetic.main.fragment_all_group.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.lang.reflect.Type
 
 /**
  * A simple [Fragment] subclass.
  */
-class AllGroupFragment : Fragment() , GroupAdapter.onClick{
+class ListGroupFragment : Fragment() , GroupAdapter.onClick{
 
 
     private val group_adapter by lazy {
         GroupAdapter(ArrayList(), this)
     }
 
-    private lateinit var mBinding: FragmentAllGroupBinding
+    private lateinit var mBinding: FragmentListGroupBinding
     private var mSocket: Socket? = null
 
     private var showData = false
@@ -64,7 +54,7 @@ class AllGroupFragment : Fragment() , GroupAdapter.onClick{
             savedInstanceState: Bundle?
     ): View? {
         requireActivity().tabs.visibility=View.VISIBLE
-        mBinding = FragmentAllGroupBinding.inflate(inflater, container, false).apply {
+        mBinding = FragmentListGroupBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
         return mBinding.root
@@ -74,7 +64,7 @@ class AllGroupFragment : Fragment() , GroupAdapter.onClick{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        ChatApplication().apply {
+        SocketConnection().apply {
             getEmitterListener(ALLGROUPS,AllGroup)
             mSocket = getSocket()
         }

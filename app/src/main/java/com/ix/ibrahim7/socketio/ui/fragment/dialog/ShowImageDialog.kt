@@ -6,14 +6,13 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
-import com.bumptech.glide.Glide
 import com.ix.ibrahim7.socketio.R
-import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.model.Message
 import com.ix.ibrahim7.socketio.util.Constant
 import kotlinx.android.synthetic.main.item_full_image.*
 import kotlinx.android.synthetic.main.item_full_image.view.*
 
-class ShowImageFragment(val data: ArrayList<TextMessage>,val position:Int) : DialogFragment() {
+class ShowImageDialog(val data: ArrayList<Message>, val position:Int) : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

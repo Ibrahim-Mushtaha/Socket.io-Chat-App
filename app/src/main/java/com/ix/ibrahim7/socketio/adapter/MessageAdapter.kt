@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ix.ibrahim7.socketio.R
-import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.model.Message
 import com.ix.ibrahim7.socketio.util.Constant.TEXT
 import com.ix.ibrahim7.socketio.util.Constant.decodeImage
 import com.ix.ibrahim7.socketio.util.Constant.getBitmapImage
@@ -16,17 +16,16 @@ import kotlinx.android.synthetic.main.item_reception_message.view.*
 import kotlinx.android.synthetic.main.item_sender_image.view.*
 import kotlinx.android.synthetic.main.item_sender_message.view.*
 import java.util.*
-import kotlin.properties.Delegates
 
 
 class MessageAdapter(
-        var activity: Activity, var data: MutableList<TextMessage>, val itemclick: onClick
+        var activity: Activity, var data: MutableList<Message>, val itemclick: onClick
 ) :
-        RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+        RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
     var userid=getUser(activity).id
 
-    class ViewHolder(item: View) : RecyclerView.ViewHolder(item)
+    class MessageViewHolder(item: View) : RecyclerView.ViewHolder(item)
     override fun getItemViewType(position: Int): Int {
         when (data[position].type) {
             TEXT -> {
@@ -47,9 +46,9 @@ class MessageAdapter(
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val itemView = LayoutInflater.from(activity).inflate(viewType, parent, false)
-        return ViewHolder(itemView)
+        return MessageViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
@@ -57,7 +56,7 @@ class MessageAdapter(
     }
 
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
 
         holder.itemView.apply {
             when (data[position].type) {
@@ -77,7 +76,7 @@ class MessageAdapter(
                         txt_date_image.text =
                                 android.text.format.DateFormat.format("hh:mm a", data[position].date)
 
-                        getBitmapImage(activity, decodeImage(data as ArrayList<TextMessage>, position), holder.itemView.tvimage_sender)
+                        getBitmapImage(activity, decodeImage(data as ArrayList<Message>, position), holder.itemView.tvimage_sender)
 
                         tvimage_sender.setOnClickListener {
                             itemclick.onClickItem(holder.adapterPosition, 1)
@@ -88,7 +87,7 @@ class MessageAdapter(
                         txt_date_image_recive.text =
                                 android.text.format.DateFormat.format("hh:mm a", data[position].date)
 
-                        getBitmapImage(activity, decodeImage(data as ArrayList<TextMessage>, position), holder.itemView.tvimage_recive)
+                        getBitmapImage(activity, decodeImage(data as ArrayList<Message>, position), holder.itemView.tvimage_recive)
 
                         tvimage_recive.setOnClickListener {
                             itemclick.onClickItem(holder.adapterPosition, 2)

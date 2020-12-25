@@ -8,13 +8,13 @@ import com.github.nkzawa.socketio.client.Socket
 import java.lang.RuntimeException
 import java.net.URISyntaxException
 
-class ChatApplication : Application() {
+class SocketConnection : Application() {
 
     private var mSocket: Socket? = null
 
     init {
         mSocket = try {
-            IO.socket("http://192.168.0.102:4000")
+            IO.socket("http://192.168.0.103:4000")
         } catch (e: URISyntaxException) {
             throw RuntimeException()
         }
@@ -27,5 +27,10 @@ class ChatApplication : Application() {
     fun getEmitterListener(event: String, listener: Emitter.Listener): Emitter? {
         return getSocket()!!.on(event, listener)
     }
+
+    init {
+        getSocket()!!.connect()
+    }
+
 
 }

@@ -1,11 +1,9 @@
 package com.ix.ibrahim7.socketio.ui.fragment.home
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,33 +14,26 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.adapter.UserAdapter
-import com.ix.ibrahim7.socketio.databinding.FragmentHomeBinding
-import com.ix.ibrahim7.socketio.model.Groups
+import com.ix.ibrahim7.socketio.databinding.FragmentListUserBinding
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.viewmodel.HomeViewModel
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.ALLUSERS
-import com.ix.ibrahim7.socketio.util.Constant.JOIN
 import com.ix.ibrahim7.socketio.util.Constant.TAG
 import com.ix.ibrahim7.socketio.util.Constant.TYPE
 import com.ix.ibrahim7.socketio.util.Constant.USER
 import com.ix.ibrahim7.socketio.util.Constant.getUser
 import com.ix.ibrahim7.socketio.util.Constant.removeDuplicates
-import devjdelasen.com.sidebubbles.SideBubbles
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONException
 import java.lang.reflect.Type
 
 
-class HomeFragment : Fragment(), UserAdapter.onClick {
+class ListUserFragment : Fragment(), UserAdapter.onClick {
 
-    private lateinit var mBinding: FragmentHomeBinding
+    private lateinit var mBinding: FragmentListUserBinding
 
     private val user_Adapter by lazy {
         UserAdapter(requireActivity(),ArrayList(), this,1)
@@ -62,7 +53,7 @@ class HomeFragment : Fragment(), UserAdapter.onClick {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().tabs.visibility=View.VISIBLE
-        mBinding = FragmentHomeBinding.inflate(inflater, container, false).apply {
+        mBinding = FragmentListUserBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
 
@@ -74,7 +65,7 @@ class HomeFragment : Fragment(), UserAdapter.onClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        ChatApplication().apply {
+        SocketConnection().apply {
             getEmitterListener(ALLUSERS, AllUser)
             mSocket = getSocket()
         }

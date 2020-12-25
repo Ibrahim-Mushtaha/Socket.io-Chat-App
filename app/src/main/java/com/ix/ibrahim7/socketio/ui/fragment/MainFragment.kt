@@ -1,4 +1,4 @@
-package com.ix.ibrahim7.socketio
+package com.ix.ibrahim7.socketio.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -12,16 +12,20 @@ import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ix.ibrahim7.socketio.adapter.ViewPagerLogin
+import com.ix.ibrahim7.socketio.R
+import com.ix.ibrahim7.socketio.adapter.ViewPager
 import com.ix.ibrahim7.socketio.databinding.FragmentMainBinding
 import com.ix.ibrahim7.socketio.model.User
-import com.ix.ibrahim7.socketio.ui.fragment.dialog.AddGroupFragment
-import com.ix.ibrahim7.socketio.ui.fragment.home.AllGroupFragment
-import com.ix.ibrahim7.socketio.ui.fragment.home.HomeFragment
+import com.ix.ibrahim7.socketio.ui.fragment.dialog.AddGroupDialog
+import com.ix.ibrahim7.socketio.ui.fragment.home.ListGroupFragment
+import com.ix.ibrahim7.socketio.ui.fragment.home.ListUserFragment
 import com.ix.ibrahim7.socketio.ui.viewmodel.HomeViewModel
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.ALLUSERS
+import com.ix.ibrahim7.socketio.util.Constant.ID
+import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
+import com.ix.ibrahim7.socketio.util.Constant.JOIN
+import com.ix.ibrahim7.socketio.util.Constant.NAME
 import com.ix.ibrahim7.socketio.util.Constant.TAG
 import com.ix.ibrahim7.socketio.util.Constant.getUser
 import com.ix.ibrahim7.socketio.util.Constant.removeDuplicates
@@ -39,7 +43,7 @@ import java.lang.reflect.Type
 class MainFragment : Fragment() {
 
     private val viewAdapter by lazy {
-        ViewPagerLogin(childFragmentManager)
+        ViewPager(childFragmentManager)
     }
 
     private lateinit var mBinding: FragmentMainBinding
@@ -50,6 +54,7 @@ class MainFragment : Fragment() {
     private val viewModel by lazy {
     ViewModelProvider(this)[HomeViewModel::class.java]
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +70,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        ChatApplication().apply {
+        SocketConnection().apply {
             getEmitterListener(Socket.EVENT_CONNECT_ERROR, onConnectError)
             getEmitterListener(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
             getEmitterListener(Socket.EVENT_CONNECT, onConnect)
@@ -89,17 +94,8 @@ class MainFragment : Fragment() {
         Log.v("eee", "Socket Connected!")
     }
 
-    private val onConnectError = Emitter.Listener {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.v("eee", "Socket Connected!")
-        }
-    }
-
-    private val onDisconnect = Emitter.Listener {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.v("eee", "Socket Connected!")
-        }
-    }
+    private val onConnectError = Emitter.Listener {}
+    private val onDisconnect = Emitter.Listener {}
 
 
     private val AllUser = Emitter.Listener { args ->
@@ -110,7 +106,6 @@ class MainFragment : Fragment() {
             users.forEach {users->
                 if (users.username != getUser(requireContext()).username) {
                     array.add(0,users)
-                    array.distinct()
                     Log.v("$TAG User Array", array.toString())
                 }
             }
@@ -124,10 +119,11 @@ class MainFragment : Fragment() {
     fun sendUserJoin() {
         try {
             val user = JSONObject().apply {
-                put(Constant.NAME,getUser(requireContext()).username)
-                put(Constant.ID,getUser(requireContext()).id)
+                put(ID,getUser(requireContext()).id)
+                put(NAME,getUser(requireContext()).username)
+                put(ISONLINE,true)
             }
-           mSocket!!.emit("join",user)
+            mSocket!!.emit(JOIN,user)
         } catch (e: JSONException) {
             Log.v("me", "error send message " + e.message)
         }
@@ -135,11 +131,11 @@ class MainFragment : Fragment() {
 
 
     private fun setUpViewPager(){
-        if (viewAdapter.lf.size == 0) {
+        if (viewAdapter.getLf().size == 0) {
             viewAdapter.addFragment(
-                HomeFragment(),"Chat")
+                ListUserFragment(),"Chat")
             viewAdapter.addFragment(
-                AllGroupFragment(), "Groups")
+                ListGroupFragment(), "Groups")
         }
         mBinding.viewPager2.adapter = viewAdapter
         requireActivity().tabs.setupWithViewPager(mBinding.viewPager2)
@@ -152,7 +148,7 @@ class MainFragment : Fragment() {
             override fun onClickItem(id: String) {
                 when(id){
                     "addGroup"->{
-                        AddGroupFragment(arrayList).show(childFragmentManager,"")
+                        AddGroupDialog(arrayList).show(childFragmentManager,"")
                     }
                 }
             }

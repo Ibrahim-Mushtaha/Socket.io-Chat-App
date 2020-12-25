@@ -28,7 +28,7 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView"
+                android:id="@+id/tvProfileImage"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:src="@drawable/ic_profile_img"
@@ -38,6 +38,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/tvOnlineStatus"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="44dp"
+                android:src="@drawable/ic_online"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/tvProfileImage"
+                app:layout_constraintStart_toStartOf="@+id/tvProfileImage"
+                app:layout_constraintTop_toTopOf="@+id/tvProfileImage"
+                app:layout_constraintVertical_bias="1.0" />
 
 
             <TextView

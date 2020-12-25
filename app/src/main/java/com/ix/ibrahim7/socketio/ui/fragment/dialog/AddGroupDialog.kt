@@ -4,42 +4,26 @@ package com.ix.ibrahim7.socketio.ui.fragment.dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.adapter.UserAdapter
 import com.ix.ibrahim7.socketio.databinding.DialogCreateGroupBinding
-import com.ix.ibrahim7.socketio.databinding.FragmentHomeBinding
-import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.model.User
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.GROUPNAME
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.ID
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
-import com.ix.ibrahim7.socketio.util.Constant.NAME
 import com.ix.ibrahim7.socketio.util.Constant.TAG
-import com.ix.ibrahim7.socketio.util.Constant.USER_GROUP
-import com.ix.ibrahim7.socketio.util.Constant.getSharePref
+import com.ix.ibrahim7.socketio.util.Constant.USERGROUP
 import com.ix.ibrahim7.socketio.util.Constant.getUser
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_create_group.*
-import kotlinx.android.synthetic.main.dialog_create_group.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddGroupFragment(val data: ArrayList<User>) : BottomSheetDialogFragment(),UserAdapter.onClick {
+class AddGroupDialog(val data: ArrayList<User>) : BottomSheetDialogFragment(),UserAdapter.onClick {
 
     private lateinit var mBinding: DialogCreateGroupBinding
 
@@ -59,7 +43,7 @@ class AddGroupFragment(val data: ArrayList<User>) : BottomSheetDialogFragment(),
             executePendingBindings()
         }
         dialog!!.setCancelable(false)
-        mSocket = ChatApplication().getSocket()
+        mSocket = SocketConnection().getSocket()
         return mBinding.root
     }
 
@@ -103,7 +87,7 @@ class AddGroupFragment(val data: ArrayList<User>) : BottomSheetDialogFragment(),
             array.put(getUser(requireContext()).id)
             group.apply {
                 put(GROUPNAME, name)
-                put(USER_GROUP, array)
+                put(USERGROUP, array)
                 put(ID, UUID.randomUUID().toString())
                 put(IMAGE, "")
             }

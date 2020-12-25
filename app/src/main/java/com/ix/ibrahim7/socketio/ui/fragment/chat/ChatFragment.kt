@@ -14,11 +14,10 @@ import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.adapter.MessageAdapter
 import com.ix.ibrahim7.socketio.databinding.FragmentChatBinding
 import com.ix.ibrahim7.socketio.model.Groups
-import com.ix.ibrahim7.socketio.model.TextMessage
+import com.ix.ibrahim7.socketio.model.Message
 import com.ix.ibrahim7.socketio.model.User
-import com.ix.ibrahim7.socketio.ui.fragment.dialog.ShowImageFragment
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.ui.fragment.dialog.ShowImageDialog
+import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.DES_ID
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
@@ -52,7 +51,6 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
     var image = ""
     var desID=""
-    var SourceID=""
 
     private val adapter by lazy {
         MessageAdapter(requireActivity(), ArrayList(), this)
@@ -98,7 +96,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
         chat_list.adapter = adapter
 
-        ChatApplication().apply {
+        SocketConnection().apply {
             getEmitterListener(MESSAGE, onNewMessage)
             mSocket = getSocket()
         }
@@ -120,10 +118,10 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
     override fun onClickItem(position: Int, type: Int) {
         when (type) {
             1 -> {
-                  ShowImageFragment(adapter.data as ArrayList<TextMessage>,position).show(childFragmentManager,"")
+                  ShowImageDialog(adapter.data as ArrayList<Message>,position).show(childFragmentManager,"")
             }
             2 -> {
-                ShowImageFragment(adapter.data as ArrayList<TextMessage>,position).show(childFragmentManager,"")
+                ShowImageDialog(adapter.data as ArrayList<Message>,position).show(childFragmentManager,"")
             }
         }
     }
@@ -144,7 +142,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                           when (data.getString(TYPE)) {
                               TEXT -> {
                                   adapter.data.add(
-                                          TextMessage(
+                                          Message(
                                                   data.getString(MESSAGE),
                                                   data.getString(SOURCE_ID),
                                                   Calendar.getInstance().time,
@@ -154,7 +152,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                               }
                               else -> {
                                   adapter.data.add(
-                                          TextMessage(
+                                          Message(
                                                   data.getString(MESSAGE),
                                                   data.getString(SOURCE_ID),
                                                   Calendar.getInstance().time,
@@ -173,7 +171,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                             when (data.getString(TYPE)) {
                                 TEXT -> {
                                     adapter.data.add(
-                                            TextMessage(
+                                            Message(
                                                     data.getString(MESSAGE),
                                                     data.getString(SOURCE_ID),
                                                     Calendar.getInstance().time,
@@ -183,7 +181,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                                 }
                                 else -> {
                                     adapter.data.add(
-                                            TextMessage(
+                                            Message(
                                                     data.getString(MESSAGE),
                                                     data.getString(SOURCE_ID),
                                                     Calendar.getInstance().time,
@@ -221,7 +219,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
         when(getType) {
                 1->{
-                    adapter.data.add(TextMessage(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
+                    adapter.data.add(Message(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
                     adapter.notifyDataSetChanged ()
                     }
         }
@@ -236,7 +234,6 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
             val outputStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             image = ImageUpload(selectedImageBmp)
-
             attemptSend(image,IMAGE)
         }
     }

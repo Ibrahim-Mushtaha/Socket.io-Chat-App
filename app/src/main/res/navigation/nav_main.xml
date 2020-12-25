@@ -10,11 +10,11 @@
         android:label="Socket IO Chat App" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.ix.ibrahim7.socketio.ui.fragment.home.HomeFragment"
+        android:name="com.ix.ibrahim7.socketio.ui.fragment.home.ListUserFragment"
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.ix.ibrahim7.socketio.MainFragment"
+        android:name="com.ix.ibrahim7.socketio.ui.fragment.MainFragment"
         android:label="Socket.io"
         tools:layout="@layout/fragment_main" >
         <action

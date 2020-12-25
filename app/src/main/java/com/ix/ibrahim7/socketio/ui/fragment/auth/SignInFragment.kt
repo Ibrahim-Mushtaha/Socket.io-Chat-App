@@ -9,26 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.databinding.FragmentSignInBinding
-import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.activity.MainActivity
-import com.ix.ibrahim7.socketio.util.ChatApplication
-import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.ID
+import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
 import com.ix.ibrahim7.socketio.util.Constant.JOIN
 import com.ix.ibrahim7.socketio.util.Constant.NAME
 import com.ix.ibrahim7.socketio.util.Constant.START
 import com.ix.ibrahim7.socketio.util.Constant.TAG
 import com.ix.ibrahim7.socketio.util.Constant.USER
-import com.ix.ibrahim7.socketio.util.Constant.USERID
 import com.ix.ibrahim7.socketio.util.Constant.editor
-import com.ix.ibrahim7.socketio.util.Constant.setUpStatusBar
 import kotlinx.android.synthetic.main.fragment_sign_in.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -39,7 +32,6 @@ class SignInFragment : Fragment() {
 
     private lateinit var mBinding: FragmentSignInBinding
     private var mSocket: Socket? = null
-    lateinit var root: View
 
     private val id = UUID.randomUUID().toString()
 
@@ -58,13 +50,8 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        ChatApplication().apply {
-            getEmitterListener(Socket.EVENT_CONNECT_ERROR, onConnectError)
-            getEmitterListener(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
-            getEmitterListener(Socket.EVENT_CONNECT, onConnect)
-            getEmitterListener(Socket.EVENT_DISCONNECT, onDisconnect)
+        SocketConnection().apply {
             mSocket = getSocket()
-            getSocket()!!.connect()
         }
 
         btn_login.setOnClickListener {
@@ -81,10 +68,6 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    var onConnect = Emitter.Listener {}
-    private val onConnectError = Emitter.Listener {}
-    private val onDisconnect = Emitter.Listener {}
-
 
     private fun attemptSend() {
         val message: String = etxt_username_login.text.toString().trim()
@@ -95,6 +78,7 @@ class SignInFragment : Fragment() {
             val user = JSONObject().apply {
                 put(NAME, etxt_username_login.text.toString().trim())
                 put(ID, id)
+                put(ISONLINE, true)
             }
             editor(requireContext()).apply {
                 putString(USER, user.toString())

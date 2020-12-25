@@ -11,7 +11,7 @@ import com.ix.ibrahim7.socketio.databinding.ItemSelectUserBinding
 import com.ix.ibrahim7.socketio.databinding.ItemUserBinding
 import com.ix.ibrahim7.socketio.model.User
 import kotlinx.android.synthetic.main.item_select_user.view.*
-import kotlinx.android.synthetic.main.item_user.view.txt_name
+import kotlinx.android.synthetic.main.item_user.view.*
 
 
 class UserAdapter(val activity: Activity,
@@ -21,7 +21,6 @@ class UserAdapter(val activity: Activity,
 
 
     class UserViewHolder(item: View) : RecyclerView.ViewHolder(item)
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         when (type) {
@@ -52,7 +51,8 @@ class UserAdapter(val activity: Activity,
 
             when (type) {
                 1 -> {
-                    txt_name.text = data[position].username
+                    txt_name.text = currentItem.username
+                    if (!currentItem.isOnline) tvOnlineStatus.visibility = View.INVISIBLE
                 }
                 else -> {
                     checkBox.text = data[position].username

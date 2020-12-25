@@ -2,7 +2,7 @@ package com.ix.ibrahim7.socketio.model
 
 import java.util.*
 
-data class TextMessage(
+data class Message(
         val message: String = "",
         val SenderName: String = "",
         val date: Date? = null,

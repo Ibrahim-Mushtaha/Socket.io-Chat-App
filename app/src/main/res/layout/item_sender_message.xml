@@ -7,7 +7,7 @@
 
         <variable
             name="message"
-            type="com.ix.ibrahim7.socketio.model.TextMessage" />
+            type="com.ix.ibrahim7.socketio.model.Message" />
     </data>
 
     <RelativeLayout

@@ -12,10 +12,10 @@ import com.ix.ibrahim7.socketio.model.Groups
 class GroupAdapter(
         var data: MutableList<Groups>, val itemclick: onClick
 ) :
-        RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
+        RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
 
-    class ViewHolder(val item: ItemGroupBinding) : RecyclerView.ViewHolder(item.root) {
+    class GroupViewHolder(val item: ItemGroupBinding) : RecyclerView.ViewHolder(item.root) {
 
         fun bind(n: Groups) {
             item.group = n
@@ -25,12 +25,12 @@ class GroupAdapter(
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
         val itemView_layout: ItemGroupBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
                 R.layout.item_group, parent, false
         )
-        return ViewHolder(itemView_layout)
+        return GroupViewHolder(itemView_layout)
     }
 
     override fun getItemCount(): Int {
@@ -38,7 +38,7 @@ class GroupAdapter(
     }
 
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
 
         holder.itemView.apply {
             setOnClickListener {
