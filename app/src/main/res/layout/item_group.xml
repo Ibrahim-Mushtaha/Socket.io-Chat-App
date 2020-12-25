@@ -29,6 +29,7 @@
                 android:id="@+id/tv_group_image"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_group_photo"
                 app:layout_constraintDimensionRatio="1:0.5"
                 app:layout_constraintEnd_toEndOf="parent"

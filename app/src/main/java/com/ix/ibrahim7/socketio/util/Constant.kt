@@ -2,6 +2,7 @@ package com.ix.ibrahim7.socketio.util
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.view.Window
 import android.view.WindowManager
@@ -13,6 +14,7 @@ import com.google.gson.Gson
 import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.model.Message
 import com.ix.ibrahim7.socketio.model.User
+import java.io.ByteArrayOutputStream
 import java.util.ArrayList
 
 object Constant {
@@ -52,8 +54,21 @@ object Constant {
                 .into(imageView)
     }
 
-    fun decodeImage(date: ArrayList<Message>, position: Int): ByteArray {
-        return android.util.Base64.decode(date[position].message, android.util.Base64.DEFAULT)
+    fun  decodeImage(imagePath:String ): ByteArray {
+        return android.util.Base64.decode(imagePath, android.util.Base64.DEFAULT)
+    }
+
+
+
+     fun ImageUploadBitmap(bitmap: Bitmap): String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+        val image: String =
+                android.util.Base64.encodeToString(
+                        byteArrayOutputStream.toByteArray(),
+                        android.util.Base64.DEFAULT
+                )
+        return image
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

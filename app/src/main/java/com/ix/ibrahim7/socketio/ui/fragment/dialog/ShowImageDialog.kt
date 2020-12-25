@@ -33,7 +33,7 @@ class ShowImageDialog(val data: ArrayList<Message>, val position:Int) : DialogFr
 
         setupClickListeners(view)
 
-        Constant.getBitmapImage(requireActivity(),Constant.decodeImage(data,position),full_image)
+        Constant.getBitmapImage(requireActivity(),Constant.decodeImage(data[position].message),full_image)
     }
 
     override fun onStart() {

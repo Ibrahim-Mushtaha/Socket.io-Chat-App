@@ -2,9 +2,7 @@ package com.ix.ibrahim7.socketio.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -77,7 +75,6 @@ class MainFragment : Fragment() {
             getEmitterListener(Socket.EVENT_DISCONNECT, onDisconnect)
             getEmitterListener(ALLUSERS, AllUser)
             mSocket=getSocket()
-            getSocket()!!.connect()
         }
 
         setUpViewPager()
@@ -129,7 +126,6 @@ class MainFragment : Fragment() {
         }
     }
 
-
     private fun setUpViewPager(){
         if (viewAdapter.getLf().size == 0) {
             viewAdapter.addFragment(
@@ -140,8 +136,6 @@ class MainFragment : Fragment() {
         mBinding.viewPager2.adapter = viewAdapter
         requireActivity().tabs.setupWithViewPager(mBinding.viewPager2)
     }
-
-
     private fun setUpSideBubbles(arrayList: ArrayList<User>){
         sideBubbles.addItem("addGroup", R.drawable.ic_group_add, ContextCompat.getColor(requireContext(), R.color.purple_700))
         sideBubbles.setClickItemListener(object : SideBubbles.OnClickItemListener{
@@ -155,5 +149,22 @@ class MainFragment : Fragment() {
 
         })
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile,menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.editProfile->{
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 }

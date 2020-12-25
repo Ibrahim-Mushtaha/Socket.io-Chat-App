@@ -21,6 +21,7 @@ import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.DES_ID
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
+import com.ix.ibrahim7.socketio.util.Constant.ImageUploadBitmap
 import com.ix.ibrahim7.socketio.util.Constant.MESSAGE
 import com.ix.ibrahim7.socketio.util.Constant.SOURCE_ID
 import com.ix.ibrahim7.socketio.util.Constant.TEXT
@@ -233,7 +234,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
             val selectedImageBmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
             val outputStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            image = ImageUpload(selectedImageBmp)
+            image = ImageUploadBitmap(selectedImageBmp)
             attemptSend(image,IMAGE)
         }
     }
@@ -248,16 +249,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
     }
 
 
-    private fun ImageUpload(bitmap: Bitmap): String {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
-        val image: String =
-                android.util.Base64.encodeToString(
-                        byteArrayOutputStream.toByteArray(),
-                        android.util.Base64.DEFAULT
-                )
-        return image
-    }
+
 
 
 

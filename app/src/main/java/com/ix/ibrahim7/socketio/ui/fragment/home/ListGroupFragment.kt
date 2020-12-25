@@ -36,7 +36,7 @@ class ListGroupFragment : Fragment() , GroupAdapter.onClick{
 
 
     private val group_adapter by lazy {
-        GroupAdapter(ArrayList(), this)
+        GroupAdapter(requireActivity(),ArrayList(), this)
     }
 
     private lateinit var mBinding: FragmentListGroupBinding

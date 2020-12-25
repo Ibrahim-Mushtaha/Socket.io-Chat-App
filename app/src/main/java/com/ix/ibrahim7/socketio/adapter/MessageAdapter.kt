@@ -76,7 +76,7 @@ class MessageAdapter(
                         txt_date_image.text =
                                 android.text.format.DateFormat.format("hh:mm a", data[position].date)
 
-                        getBitmapImage(activity, decodeImage(data as ArrayList<Message>, position), holder.itemView.tvimage_sender)
+                        getBitmapImage(activity, decodeImage(data[position].message), holder.itemView.tvimage_sender)
 
                         tvimage_sender.setOnClickListener {
                             itemclick.onClickItem(holder.adapterPosition, 1)
@@ -87,7 +87,7 @@ class MessageAdapter(
                         txt_date_image_recive.text =
                                 android.text.format.DateFormat.format("hh:mm a", data[position].date)
 
-                        getBitmapImage(activity, decodeImage(data as ArrayList<Message>, position), holder.itemView.tvimage_recive)
+                        getBitmapImage(activity, decodeImage(data[position].message), holder.itemView.tvimage_recive)
 
                         tvimage_recive.setOnClickListener {
                             itemclick.onClickItem(holder.adapterPosition, 2)

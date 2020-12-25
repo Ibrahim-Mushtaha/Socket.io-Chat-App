@@ -62,7 +62,7 @@
                 android:textColor="@color/purple_700"
                 android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView"
+                app:layout_constraintStart_toEndOf="@+id/tvProfileImage"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -75,7 +75,7 @@
                 android:visibility="gone"
                 android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView"
+                app:layout_constraintStart_toEndOf="@+id/txt_name"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.909" />
 
