@@ -3,6 +3,7 @@ package com.ix.ibrahim7.socketio.util
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.view.Window
 import android.view.WindowManager
@@ -26,7 +27,8 @@ object Constant {
     val ALLUSERS = "AllUsers"
     val GROUPS = "Group"
     val ALLGROUPS = "AllGroup"
-    val UPDATEUSER = "updateUser"
+    val UPDATEUSER = "updateStatus"
+    val UPDATEPROFILE = "UpdateProfile"
     const val ID = "id"
     const val NAME = "username"
     const val GROUPNAME = "name"
@@ -54,13 +56,15 @@ object Constant {
                 .into(imageView)
     }
 
-    fun  decodeImage(imagePath:String ): ByteArray {
-        return android.util.Base64.decode(imagePath, android.util.Base64.DEFAULT)
+    fun  decodeImage(imagePath:String): Bitmap? {
+        val decodeString= android.util.Base64.decode(imagePath, android.util.Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodeString, 0, decodeString.size)
     }
 
+    
 
 
-     fun ImageUploadBitmap(bitmap: Bitmap): String {
+     fun convertToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
         val image: String =

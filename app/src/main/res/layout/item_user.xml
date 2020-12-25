@@ -23,7 +23,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:padding="10dp"
             android:background="@color/white">
 
 
@@ -31,6 +31,7 @@
                 android:id="@+id/tvProfileImage"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
+                android:elevation="4dp"
                 android:src="@drawable/ic_profile_img"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +46,7 @@
                 android:layout_height="28dp"
                 android:layout_marginStart="44dp"
                 android:src="@drawable/ic_online"
+                android:elevation="4dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/tvProfileImage"
                 app:layout_constraintStart_toStartOf="@+id/tvProfileImage"
@@ -66,18 +68,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:id="@+id/txt_last_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:textColor="#7A7A7A"
-                android:visibility="gone"
-                android:textSize="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/txt_name"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.909" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group2"

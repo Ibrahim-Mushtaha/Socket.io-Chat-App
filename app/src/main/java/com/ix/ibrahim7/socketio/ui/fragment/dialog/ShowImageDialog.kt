@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.model.Message
 import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.decodeImage
 import kotlinx.android.synthetic.main.item_full_image.*
 import kotlinx.android.synthetic.main.item_full_image.view.*
 
@@ -32,8 +33,7 @@ class ShowImageDialog(val data: ArrayList<Message>, val position:Int) : DialogFr
         super.onViewCreated(view, savedInstanceState)
 
         setupClickListeners(view)
-
-        Constant.getBitmapImage(requireActivity(),Constant.decodeImage(data[position].message),full_image)
+        full_image.setImageBitmap(decodeImage(data[position].message))
     }
 
     override fun onStart() {

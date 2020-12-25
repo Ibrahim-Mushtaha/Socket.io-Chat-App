@@ -14,6 +14,7 @@ import com.ix.ibrahim7.socketio.databinding.FragmentSignInBinding
 import com.ix.ibrahim7.socketio.ui.activity.MainActivity
 import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.ID
+import com.ix.ibrahim7.socketio.util.Constant.IMAGE
 import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
 import com.ix.ibrahim7.socketio.util.Constant.JOIN
 import com.ix.ibrahim7.socketio.util.Constant.NAME
@@ -78,6 +79,7 @@ class SignInFragment : Fragment() {
             val user = JSONObject().apply {
                 put(NAME, etxt_username_login.text.toString().trim())
                 put(ID, id)
+                put(IMAGE, "")
                 put(ISONLINE, true)
             }
             editor(requireContext()).apply {

@@ -21,12 +21,12 @@ import com.ix.ibrahim7.socketio.util.SocketConnection
 import com.ix.ibrahim7.socketio.util.Constant.DES_ID
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
-import com.ix.ibrahim7.socketio.util.Constant.ImageUploadBitmap
 import com.ix.ibrahim7.socketio.util.Constant.MESSAGE
 import com.ix.ibrahim7.socketio.util.Constant.SOURCE_ID
 import com.ix.ibrahim7.socketio.util.Constant.TEXT
 import com.ix.ibrahim7.socketio.util.Constant.TYPE
 import com.ix.ibrahim7.socketio.util.Constant.USER
+import com.ix.ibrahim7.socketio.util.Constant.convertToBase64
 import com.ix.ibrahim7.socketio.util.Constant.getUser
 import com.vansuita.pickimage.bean.PickResult
 import com.vansuita.pickimage.bundle.PickSetup
@@ -234,7 +234,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
             val selectedImageBmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
             val outputStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            image = ImageUploadBitmap(selectedImageBmp)
+            image = convertToBase64(selectedImageBmp)
             attemptSend(image,IMAGE)
         }
     }

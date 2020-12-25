@@ -10,6 +10,8 @@ import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.databinding.ItemSelectUserBinding
 import com.ix.ibrahim7.socketio.databinding.ItemUserBinding
 import com.ix.ibrahim7.socketio.model.User
+import com.ix.ibrahim7.socketio.util.Constant
+import com.ix.ibrahim7.socketio.util.Constant.decodeImage
 import kotlinx.android.synthetic.main.item_select_user.view.*
 import kotlinx.android.synthetic.main.item_user.view.*
 
@@ -53,10 +55,11 @@ class UserAdapter(val activity: Activity,
                 1 -> {
                     txt_name.text = currentItem.username
                     if (!currentItem.isOnline) tvOnlineStatus.visibility = View.INVISIBLE
+                    if (currentItem.image != "") tvProfileImage.setImageBitmap(decodeImage(currentItem.image))
                 }
                 else -> {
                     checkBox.text = data[position].username
-
+                    if (currentItem.image != "") tv_profile_image.setImageBitmap(decodeImage(currentItem.image))
                     checkBox.setOnClickListener {
                         if (checkBox.isChecked) {
                             itemclick.onClickItem(currentItem, holder.adapterPosition, 1)

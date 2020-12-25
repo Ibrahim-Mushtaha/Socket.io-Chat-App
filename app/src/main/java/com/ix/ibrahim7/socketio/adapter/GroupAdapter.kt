@@ -52,7 +52,7 @@ class GroupAdapter(
         holder.bind(currentItem)
 
         holder.itemView.apply {
-            getBitmapImage(activity, decodeImage(data[position].image), tv_group_image)
+            tv_group_image.setImageBitmap(decodeImage(data[position].image))
             setOnClickListener {
                 itemclick.onClickItem(data[position],holder.adapterPosition, 1)
             }

@@ -18,9 +18,9 @@ import com.ix.ibrahim7.socketio.util.Constant.GROUPNAME
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.ID
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
-import com.ix.ibrahim7.socketio.util.Constant.ImageUploadBitmap
 import com.ix.ibrahim7.socketio.util.Constant.TAG
 import com.ix.ibrahim7.socketio.util.Constant.USERGROUP
+import com.ix.ibrahim7.socketio.util.Constant.convertToBase64
 import com.ix.ibrahim7.socketio.util.Constant.getBitmapImage
 import com.ix.ibrahim7.socketio.util.Constant.getUser
 import com.vansuita.pickimage.bean.PickResult
@@ -119,9 +119,10 @@ class AddGroupDialog(val data: ArrayList<User>) : BottomSheetDialogFragment(),Us
             val selectedImageBmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
             val outputStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            image = ImageUploadBitmap(selectedImageBmp)
+            image = convertToBase64(selectedImageBmp)
             mBinding.chooseImage.visibility=View.INVISIBLE
             mBinding.tvChoose.setBackgroundColor(Color.TRANSPARENT)
+            mBinding.tvImageGroup.setImageBitmap(selectedImageBmp)
             getBitmapImage(requireActivity(),android.util.Base64.decode(image, android.util.Base64.DEFAULT),mBinding.tvImageGroup)
         }
     }

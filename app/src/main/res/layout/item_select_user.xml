@@ -19,9 +19,10 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/tv_circleImageView"
+                android:id="@+id/tv_profile_image"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
+                android:elevation="4dp"
                 android:src="@drawable/ic_profile_img"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_circleImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_profile_image" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

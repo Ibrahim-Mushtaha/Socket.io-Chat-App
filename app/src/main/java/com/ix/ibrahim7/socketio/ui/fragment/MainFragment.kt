@@ -6,6 +6,7 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
 import com.google.gson.Gson
@@ -160,7 +161,7 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.editProfile->{
-
+                parentFragment?.findNavController()?.navigate(R.id.action_mainFragment_to_profileFragment)
             }
         }
         return super.onOptionsItemSelected(item)
