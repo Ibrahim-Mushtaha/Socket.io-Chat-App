@@ -137,7 +137,6 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                 when(getType) {
                   1->{
                       if (data.getString(DES_ID).equals(getUser(requireContext()).id) && data.getString(SOURCE_ID).equals(user_details.id)) {
-                        //  adapter.userid=getUser(requireContext()).id
                           when (data.getString(TYPE)) {
                               TEXT -> {
                                   adapter.data.add(
@@ -166,7 +165,6 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                   }
                     2-> {
                         if (data.getString(DES_ID).contains(getUser(requireContext()).id)) {
-                       //     adapter.userid=getUser(requireContext()).id
                             when (data.getString(TYPE)) {
                                 TEXT -> {
                                     adapter.data.add(

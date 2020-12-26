@@ -55,8 +55,7 @@ class ProfileFragment : Fragment(), IPickResult {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        SocketManager()
-            .apply { mSocket = getSocket() }
+        SocketManager().apply { mSocket = getSocket() }
 
         if (getUser(requireContext()).image != "") {
             mBinding.tvProfileImage.setImageBitmap(decodeImage(getUser(requireContext()).image))
