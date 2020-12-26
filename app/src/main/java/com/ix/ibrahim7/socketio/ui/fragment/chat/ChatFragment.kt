@@ -48,8 +48,6 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
     private lateinit var mBinding: FragmentChatBinding
 
     private var mSocket: Socket? = null
-
-
     var image = ""
     var desID=""
 

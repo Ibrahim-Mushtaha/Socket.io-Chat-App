@@ -12,7 +12,7 @@ import com.github.nkzawa.socketio.client.Socket
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ix.ibrahim7.socketio.R
-import com.ix.ibrahim7.socketio.adapter.ViewPager
+import com.ix.ibrahim7.socketio.adapter.ViewPagerAdapter
 import com.ix.ibrahim7.socketio.databinding.FragmentMainBinding
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.fragment.dialog.AddGroupDialog
@@ -42,7 +42,7 @@ import java.lang.reflect.Type
 class MainFragment : Fragment() {
 
     private val viewAdapter by lazy {
-        ViewPager(childFragmentManager)
+        ViewPagerAdapter(childFragmentManager)
     }
 
     private lateinit var mBinding: FragmentMainBinding
@@ -88,7 +88,7 @@ class MainFragment : Fragment() {
     }
 
     var onConnect = Emitter.Listener {
-        sendUserJoin()
+        joinUser()
         Log.v("eee", "Socket Connected!")
     }
 
@@ -114,7 +114,7 @@ class MainFragment : Fragment() {
 
 
 
-    fun sendUserJoin() {
+    fun joinUser() {
         try {
             val user = JSONObject().apply {
                 put(ID,getUser(requireContext()).id)

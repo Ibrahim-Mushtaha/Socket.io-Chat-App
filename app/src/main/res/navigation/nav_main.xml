@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.ix.ibrahim7.socketio.ProfileFragment"
+        android:name="com.ix.ibrahim7.socketio.ui.fragment.home.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

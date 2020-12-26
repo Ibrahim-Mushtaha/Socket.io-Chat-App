@@ -33,7 +33,6 @@ class SignInFragment : Fragment() {
 
     private lateinit var mBinding: FragmentSignInBinding
     private var mSocket: Socket? = null
-
     private val id = UUID.randomUUID().toString()
 
     override fun onCreateView(
@@ -56,13 +55,19 @@ class SignInFragment : Fragment() {
         }
 
         btn_login.setOnClickListener {
-            if (etxt_username_login.text.isNotEmpty()) {
-                startActivity(Intent(requireContext(), MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                })
-                attemptSend()
-            } else {
-                Toast.makeText(requireContext(), "check your Input", Toast.LENGTH_SHORT).show()
+            val username: String = etxt_username_login.text.toString().trim()
+            when {
+                TextUtils.isEmpty(username) -> {
+                    mBinding.etxtUsernameLogin.error = "Required Field"
+                    mBinding.etxtUsernameLogin.requestFocus()
+                    return@setOnClickListener
+                }
+                    else->{
+                        startActivity(Intent(requireContext(), MainActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        })
+                        joinUser(username)
+                    }
             }
         }
 
@@ -70,14 +75,10 @@ class SignInFragment : Fragment() {
     }
 
 
-    private fun attemptSend() {
-        val message: String = etxt_username_login.text.toString().trim()
-        if (TextUtils.isEmpty(message)) {
-            return
-        }
+    private fun joinUser(username:String) {
         try {
             val user = JSONObject().apply {
-                put(NAME, etxt_username_login.text.toString().trim())
+                put(NAME, username)
                 put(ID, id)
                 put(IMAGE, "")
                 put(ISONLINE, true)

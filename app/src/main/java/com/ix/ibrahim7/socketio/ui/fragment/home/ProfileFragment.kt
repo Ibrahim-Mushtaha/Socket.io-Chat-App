@@ -1,22 +1,15 @@
-package com.ix.ibrahim7.socketio
+package com.ix.ibrahim7.socketio.ui.fragment.home
 
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.Socket
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.ix.ibrahim7.socketio.databinding.FragmentListUserBinding
+import com.ix.ibrahim7.socketio.R
 import com.ix.ibrahim7.socketio.databinding.FragmentProfileBinding
-import com.ix.ibrahim7.socketio.model.User
-import com.ix.ibrahim7.socketio.util.Constant
 import com.ix.ibrahim7.socketio.util.Constant.ID
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
 import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
@@ -33,12 +26,8 @@ import com.vansuita.pickimage.bundle.PickSetup
 import com.vansuita.pickimage.dialog.PickImageDialog
 import com.vansuita.pickimage.listeners.IPickResult
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
-import java.lang.reflect.Type
 
 
 class ProfileFragment : Fragment(), IPickResult {
@@ -48,7 +37,8 @@ class ProfileFragment : Fragment(), IPickResult {
     private var mSocket: Socket? = null
     private val json = JSONObject()
     private var click = false
-    private var image = ""
+    private var profileImage = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,7 +61,7 @@ class ProfileFragment : Fragment(), IPickResult {
             mBinding.tvProfileImage.setImageBitmap(decodeImage(getUser(requireContext()).image))
         }
 
-        image = getUser(requireContext()).image
+        profileImage = getUser(requireContext()).image
         mBinding.etxtUsername.setText(getUser(requireContext()).username)
         mBinding.etxtUsername.isEnabled = click
 
@@ -93,7 +83,7 @@ class ProfileFragment : Fragment(), IPickResult {
             } else {
                 click = true
                 mBinding.etxtUsername.isEnabled = click
-                json.put(IMAGE, image)
+                json.put(IMAGE, profileImage)
                 mSocket!!.emit(UPDATEPROFILE, json)
                 editor(requireContext())!!.apply {
                     putString(USER, json.toString())
@@ -118,9 +108,9 @@ class ProfileFragment : Fragment(), IPickResult {
                 MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
             val outputStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            image = convertToBase64(selectedImageBmp)
+            profileImage = convertToBase64(selectedImageBmp)
             mBinding.tvProfileImage.setImageBitmap(selectedImageBmp)
-            json.put(IMAGE, image)
+            json.put(IMAGE, profileImage)
             mSocket!!.emit(UPDATEPROFILE, json)
             editor(requireContext())!!.apply {
                 putString(USER, json.toString())
