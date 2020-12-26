@@ -16,7 +16,7 @@ import com.ix.ibrahim7.socketio.util.Constant.ID
 import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
 import com.ix.ibrahim7.socketio.util.Constant.UPDATEUSER
 import com.ix.ibrahim7.socketio.util.Constant.setUpStatusBar
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        SocketConnection().apply {
+        SocketManager().apply {
             mSocket = getSocket()
         }
 

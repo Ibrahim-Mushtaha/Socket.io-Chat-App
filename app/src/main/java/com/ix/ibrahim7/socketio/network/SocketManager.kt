@@ -1,4 +1,4 @@
-package com.ix.ibrahim7.socketio.util
+package com.ix.ibrahim7.socketio.network
 
 import android.app.Application
 import android.util.Log
@@ -8,7 +8,7 @@ import com.github.nkzawa.socketio.client.Socket
 import java.lang.RuntimeException
 import java.net.URISyntaxException
 
-class SocketConnection : Application() {
+class SocketManager : Application() {
 
     private var mSocket: Socket? = null
 

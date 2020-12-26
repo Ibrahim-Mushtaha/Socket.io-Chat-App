@@ -17,7 +17,7 @@ import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.model.Message
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.fragment.dialog.ShowImageDialog
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.ix.ibrahim7.socketio.util.Constant.DES_ID
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
@@ -95,7 +95,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
         chat_list.adapter = adapter
 
-        SocketConnection().apply {
+        SocketManager().apply {
             getEmitterListener(MESSAGE, onNewMessage)
             mSocket = getSocket()
         }

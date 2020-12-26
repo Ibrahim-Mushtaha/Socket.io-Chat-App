@@ -8,11 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.github.nkzawa.socketio.client.Socket
 import com.ix.ibrahim7.socketio.databinding.FragmentSignInBinding
 import com.ix.ibrahim7.socketio.ui.activity.MainActivity
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.ix.ibrahim7.socketio.util.Constant.ID
 import com.ix.ibrahim7.socketio.util.Constant.IMAGE
 import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
@@ -50,7 +49,7 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        SocketConnection().apply {
+        SocketManager().apply {
             mSocket = getSocket()
         }
 

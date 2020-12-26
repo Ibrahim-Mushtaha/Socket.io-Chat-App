@@ -20,7 +20,7 @@ import com.ix.ibrahim7.socketio.util.Constant.convertToBase64
 import com.ix.ibrahim7.socketio.util.Constant.decodeImage
 import com.ix.ibrahim7.socketio.util.Constant.editor
 import com.ix.ibrahim7.socketio.util.Constant.getUser
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.vansuita.pickimage.bean.PickResult
 import com.vansuita.pickimage.bundle.PickSetup
 import com.vansuita.pickimage.dialog.PickImageDialog
@@ -55,7 +55,8 @@ class ProfileFragment : Fragment(), IPickResult {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        SocketConnection().apply { mSocket = getSocket() }
+        SocketManager()
+            .apply { mSocket = getSocket() }
 
         if (getUser(requireContext()).image != "") {
             mBinding.tvProfileImage.setImageBitmap(decodeImage(getUser(requireContext()).image))

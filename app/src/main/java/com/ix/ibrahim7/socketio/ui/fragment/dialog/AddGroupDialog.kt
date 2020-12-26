@@ -12,8 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ix.ibrahim7.socketio.adapter.UserAdapter
 import com.ix.ibrahim7.socketio.databinding.DialogCreateGroupBinding
 import com.ix.ibrahim7.socketio.model.User
-import com.ix.ibrahim7.socketio.util.Constant
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.ix.ibrahim7.socketio.util.Constant.GROUPNAME
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.ID
@@ -55,7 +54,7 @@ class AddGroupDialog(val data: ArrayList<User>) : BottomSheetDialogFragment(),Us
             executePendingBindings()
         }
         dialog!!.setCancelable(false)
-        mSocket = SocketConnection().getSocket()
+        mSocket = SocketManager().getSocket()
         return mBinding.root
     }
 

@@ -17,7 +17,7 @@ import com.ix.ibrahim7.socketio.adapter.UserAdapter
 import com.ix.ibrahim7.socketio.databinding.FragmentListUserBinding
 import com.ix.ibrahim7.socketio.model.User
 import com.ix.ibrahim7.socketio.ui.viewmodel.HomeViewModel
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.ix.ibrahim7.socketio.util.Constant.ALLUSERS
 import com.ix.ibrahim7.socketio.util.Constant.TAG
 import com.ix.ibrahim7.socketio.util.Constant.TYPE
@@ -65,7 +65,7 @@ class ListUserFragment : Fragment(), UserAdapter.onClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        SocketConnection().apply {
+        SocketManager().apply {
             getEmitterListener(ALLUSERS, AllUser)
             mSocket = getSocket()
         }

@@ -18,7 +18,7 @@ import com.ix.ibrahim7.socketio.adapter.GroupAdapter
 import com.ix.ibrahim7.socketio.databinding.FragmentListGroupBinding
 import com.ix.ibrahim7.socketio.model.Groups
 import com.ix.ibrahim7.socketio.ui.viewmodel.GroupsViewModel
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.ix.ibrahim7.socketio.util.Constant.ALLGROUPS
 import com.ix.ibrahim7.socketio.util.Constant.GROUPS
 import com.ix.ibrahim7.socketio.util.Constant.TYPE
@@ -64,7 +64,7 @@ class ListGroupFragment : Fragment() , GroupAdapter.onClick{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-        SocketConnection().apply {
+        SocketManager().apply {
             getEmitterListener(ALLGROUPS,AllGroup)
             mSocket = getSocket()
         }

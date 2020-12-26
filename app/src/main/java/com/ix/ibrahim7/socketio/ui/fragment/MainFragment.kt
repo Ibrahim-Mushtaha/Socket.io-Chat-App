@@ -19,7 +19,7 @@ import com.ix.ibrahim7.socketio.ui.fragment.dialog.AddGroupDialog
 import com.ix.ibrahim7.socketio.ui.fragment.home.ListGroupFragment
 import com.ix.ibrahim7.socketio.ui.fragment.home.ListUserFragment
 import com.ix.ibrahim7.socketio.ui.viewmodel.HomeViewModel
-import com.ix.ibrahim7.socketio.util.SocketConnection
+import com.ix.ibrahim7.socketio.network.SocketManager
 import com.ix.ibrahim7.socketio.util.Constant.ALLUSERS
 import com.ix.ibrahim7.socketio.util.Constant.ID
 import com.ix.ibrahim7.socketio.util.Constant.ISONLINE
@@ -69,7 +69,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        SocketConnection().apply {
+        SocketManager().apply {
             getEmitterListener(Socket.EVENT_CONNECT_ERROR, onConnectError)
             getEmitterListener(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
             getEmitterListener(Socket.EVENT_CONNECT, onConnect)
