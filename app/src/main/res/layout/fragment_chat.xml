@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:reverseLayout="false"
+            app:reverseLayout="true"
             android:paddingBottom="2dp"
             android:background="@color/cardview_shadow_end_color"
             tools:listitem="@layout/item_sender_message"

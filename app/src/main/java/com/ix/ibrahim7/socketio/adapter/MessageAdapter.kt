@@ -26,6 +26,7 @@ class MessageAdapter(
     var userid=getUser(activity).id
 
     class MessageViewHolder(item: View) : RecyclerView.ViewHolder(item)
+
     override fun getItemViewType(position: Int): Int {
         when (data[position].type) {
             TEXT -> {

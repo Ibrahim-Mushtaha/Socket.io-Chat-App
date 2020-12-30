@@ -100,8 +100,6 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
             mSocket = getSocket()
         }
 
-
-
         mBinding.btnSend.setOnClickListener {
             attemptSend(etxt_massege.text.toString(), TEXT)
         }
@@ -139,7 +137,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                       if (data.getString(DES_ID).equals(getUser(requireContext()).id) && data.getString(SOURCE_ID).equals(user_details.id)) {
                           when (data.getString(TYPE)) {
                               TEXT -> {
-                                  adapter.data.add(
+                                  adapter.data.add(0,
                                           Message(
                                                   data.getString(MESSAGE),
                                                   data.getString(SOURCE_ID),
@@ -149,7 +147,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                                   )
                               }
                               else -> {
-                                  adapter.data.add(
+                                  adapter.data.add(0,
                                           Message(
                                                   data.getString(MESSAGE),
                                                   data.getString(SOURCE_ID),
@@ -167,7 +165,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                         if (data.getString(DES_ID).contains(getUser(requireContext()).id)) {
                             when (data.getString(TYPE)) {
                                 TEXT -> {
-                                    adapter.data.add(
+                                    adapter.data.add(0,
                                             Message(
                                                     data.getString(MESSAGE),
                                                     data.getString(SOURCE_ID),
@@ -177,7 +175,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
                                     )
                                 }
                                 else -> {
-                                    adapter.data.add(
+                                    adapter.data.add(0,
                                             Message(
                                                     data.getString(MESSAGE),
                                                     data.getString(SOURCE_ID),
@@ -216,7 +214,7 @@ class ChatFragment : Fragment(), MessageAdapter.onClick, IPickResult {
 
         when(getType) {
                 1->{
-                    adapter.data.add(Message(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
+                    adapter.data.add(0,Message(message, getUser(requireContext()).id, Calendar.getInstance().time, type))
                     adapter.notifyDataSetChanged ()
                     }
         }

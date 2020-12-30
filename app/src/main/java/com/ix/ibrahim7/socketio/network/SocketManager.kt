@@ -14,7 +14,7 @@ class SocketManager : Application() {
 
     init {
         mSocket = try {
-            IO.socket("http://192.168.0.103:4000")
+            IO.socket("http://192.168.0.102:4000")
         } catch (e: URISyntaxException) {
             throw RuntimeException()
         }
